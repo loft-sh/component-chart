@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v1
       - uses: azure/setup-helm@v1
         with:
-          version: '3.0.2'
+          version: 'v3.0.2'
       - run: |
           helm plugin install https://github.com/chartmuseum/helm-push
           helm repo add chartmuseum $CHART_MUSEUM_URL --username $CHART_MUSEUM_USER --password $CHART_MUSEUM_PASSWORD
