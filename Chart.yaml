@@ -1,0 +1,3 @@
+name: component-chart
+version: v0.0.9
+description: A general purpose helm chart for deploying components of an application

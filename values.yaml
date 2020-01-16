@@ -1,0 +1,31 @@
+#### DevSpace Helm Chart ####
+# This is a highly configurable Helm chart. For information on how to configure this file,
+# take a look at the documentation: https://devspace.cloud/docs/cli/deployment/components/configuration/overview-specification
+
+# A list of containers that should run the pods of this component
+containers: []
+initContainers: []
+
+service:
+  type: ClusterIP
+  labels: {}
+  annotations: {}
+  ports: []
+  externalIPs: []
+
+labels: {}
+annotations: {}
+
+ingress:
+  labels: {}
+  annotations: {}
+  rules: []
+
+# Define persistent volumes here
+# Then mount them in containers above
+volumes: []
+
+# Defines image pull secrets
+# DevSpace CLI will append all pull secrets which are automatically created
+# More infos on: https://devspace.cloud/docs/cli/image-building/workflow-basics#8-create-image-pull-secret
+pullSecrets: []

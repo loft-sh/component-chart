@@ -1,0 +1,44 @@
+{{- range $volumeIndex, $volume := .Values.volumes }}
+{{- if or $volume.secret $volume.configMap }}
+{{- else }}
+{{- $createVolume := false }}
+{{- range $containerIndex, $container := $.Values.containers }}
+  {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
+    {{- if $volumeMount.volume.readOnly }}
+      {{- if eq $volume.name $volumeMount.volume.name }}
+        {{- $createVolume = true }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- if $createVolume }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $volume.name | quote }}
+  labels:
+    "app.kubernetes.io/name": "devspace-app"
+    "app.kubernetes.io/component": {{ $.Release.Name | quote }}
+    "app.kubernetes.io/managed-by": {{ $.Release.Service | quote }}
+    {{- if $volume.labels }}
+    {{- range $labelName, $labelValue := $volume.labels }}
+    {{ $labelName | quote }}: {{ $labelValue | quote }}
+    {{- end }}
+    {{- end }}
+  annotations:
+    "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    {{- if $volume.annotations }}
+    {{- range $annotationName, $annotationValue := $volume.annotations }}
+    {{ $annotationName | quote }}: {{ $annotationValue | quote }}
+    {{- end }}
+    {{- end }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ $volume.size | quote }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,68 @@
+{{- if $.Values.autoScaling}}
+{{- if $.Values.autoScaling.horizontal }}
+{{- if gt $.Values.autoScaling.horizontal.maxReplicas $.Values.replicas }}
+{{- $kind := "Deployment" }}
+{{- range $containerIndex, $container := $.Values.containers }}
+  {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
+    {{- if $volumeMount.volume.readOnly }}
+    {{- else }}
+      {{- range $volumeIndex, $volume := $.Values.volumes }}
+        {{- if eq $volumeMount.volume.name $volume.name }}
+          {{- $kind = "StatefulSet" }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $.Release.Name | quote }}
+  labels:
+    "app.kubernetes.io/name": "devspace-app"
+    "app.kubernetes.io/component": {{ $.Release.Name | quote }}
+    "app.kubernetes.io/managed-by": {{ $.Release.Service | quote }}
+    {{- range $labelName, $labelValue := $.Values.labels }}
+    {{ $labelName | quote }}: {{ $labelValue | quote }}
+    {{- end }}
+  annotations:
+    "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    {{- range $annotationName, $annotationValue := $.Values.annotations }}
+    {{ $annotationName | quote }}: {{ $annotationValue | quote }}
+    {{- end }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: {{ $kind }}
+    name: {{ $.Release.Name | quote }}
+  minReplicas: {{ $.Values.replicas }}
+  maxReplicas: {{ $.Values.autoScaling.horizontal.maxReplicas }}
+  metrics:
+  {{- if $.Values.autoScaling.horizontal.averageCPU }}
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageValue: {{ $.Values.autoScaling.horizontal.averageCPU }}
+  {{- end }}
+  {{- if $.Values.autoScaling.horizontal.averageRelativeCPU }}
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeCPU }}
+  {{- end }}
+  {{- if $.Values.autoScaling.horizontal.averageMemory }}
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageValue: {{ $.Values.autoScaling.horizontal.averageMemory | quote }}
+  {{- end }}
+  {{- if $.Values.autoScaling.horizontal.averageRelativeMemory }}
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeMemory | quote }}
+  {{- end }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

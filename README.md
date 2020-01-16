@@ -1,1 +1,1 @@
-# component-chart
+# Component Chart

@@ -1,0 +1,100 @@
+{{- range $rulesIndex, $rulesUnused := $.Values.ingress.rules }}
+{{- if eq $rulesIndex 0 }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  {{- if $.Values.ingress.name }}
+  name: {{ $.Values.ingress.name | quote }}
+  {{- else }}
+  {{- if $.Values.ingress.serviceName }}
+  name: {{ $.Values.ingress.serviceName | quote }}
+  {{- else }}
+  {{- if $.Values.service.name }}
+  name: {{ $.Values.service.name | quote }}
+  {{- else }}
+  name: {{ $.Release.Name | quote }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  labels:
+    "app.kubernetes.io/name": {{ $.Release.Name | quote }}
+    "app.kubernetes.io/managed-by": {{ $.Release.Service | quote }}
+    {{- range $labelName, $labelValue := $.Values.ingress.labels }}
+    {{ $labelName | quote }}: {{ $labelValue | quote }}
+    {{- end }}
+  annotations:
+    "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    {{- range $annotationName, $annotationValue := $.Values.ingress.annotations }}
+    {{ $annotationName | quote }}: {{ $annotationValue | quote }}
+    {{- end }}
+spec:
+  rules:
+  {{- range $ingressRuleIndex, $ingressRule := $.Values.ingress.rules }}
+  - host: {{ $ingressRule.host | quote }}
+    http:
+      paths:
+      - backend:
+          {{- if $.Values.ingress.serviceName }}
+          serviceName: {{ $.Values.ingress.serviceName | quote }}
+          {{- else }}
+          {{- if $.Values.service.name }}
+          serviceName: {{ $.Values.service.name | quote }}
+          {{- else }}
+          serviceName: {{ $.Release.Name | quote }}
+          {{- end }}
+          {{- end }}
+          {{- if $ingressRule.servicePort }}
+          servicePort: {{ $ingressRule.servicePort }}
+          {{- else }}
+          servicePort: {{ (index $.Values.service.ports 0).port }}
+          {{- end }}
+        {{- if $ingressRule.path }}
+        path: {{ $ingressRule.path | quote }}
+        {{- else }}
+        path: /
+        {{- end }}
+  {{- end }}
+  tls:
+  {{- range $ingressRuleIndex, $ingressRule := $.Values.ingress.rules }}
+  {{- if and (not $ingressRule.tls) $.Values.ingress.tls }}
+  {{- if not (eq (printf "%s" $.Values.ingress.tls) (printf "%t" false)) }}
+  - hosts:
+    - {{ $ingressRule.host }}
+    {{- if eq (printf "%s" $.Values.ingress.tls) (printf "%t" true) }}
+    {{- if $.Values.ingress.name }}
+    secretName: {{ $.Values.ingress.name | quote }}
+    {{- else }}
+    {{- if $.Values.service.name }}
+    secretName: {{ $.Values.service.name | quote }}
+    {{- else }}
+    secretName: {{ $.Release.Name | quote }}
+    {{- end }}
+    {{- end }}
+    {{- else }}
+    secretName: {{ $.Values.ingress.tls | quote }}
+    {{- end }}
+  {{- end }}
+  {{- else }}
+  {{- if $ingressRule.tls }}
+  {{- if not (eq (printf "%s" $ingressRule.tls) (printf "%t" false)) }}
+  - hosts:
+    - {{ $ingressRule.host }}
+    {{- if eq (printf "%s" $ingressRule.tls) (printf "%t" true) }}
+    {{- if $.Values.ingress.name }}
+    secretName: {{ $.Values.ingress.name | quote }}
+    {{- else }}
+    {{- if $.Values.service.name }}
+    secretName: {{ $.Values.service.name | quote }}
+    {{- else }}
+    secretName: {{ $.Release.Name | quote }}
+    {{- end }}
+    {{- end }}
+    {{- else }}
+    secretName: "{{ $ingressRule.tls }}"
+    {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}
