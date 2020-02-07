@@ -57,10 +57,10 @@ spec:
   tls:
   {{- range $ingressRuleIndex, $ingressRule := $.Values.ingress.rules }}
   {{- if and (not $ingressRule.tls) $.Values.ingress.tls }}
-  {{- if not (eq (printf "%s" $.Values.ingress.tls) (printf "%t" false)) }}
+  {{- if not (eq (printf "%s" $.Values.ingress.tls) (printf "%s" false)) }}
   - hosts:
     - {{ $ingressRule.host }}
-    {{- if eq (printf "%s" $.Values.ingress.tls) (printf "%t" true) }}
+    {{- if eq (printf "%s" $.Values.ingress.tls) (printf "%s" true) }}
     {{- if $.Values.ingress.name }}
     secretName: {{ $.Values.ingress.name | quote }}
     {{- else }}
@@ -76,10 +76,10 @@ spec:
   {{- end }}
   {{- else }}
   {{- if $ingressRule.tls }}
-  {{- if not (eq (printf "%s" $ingressRule.tls) (printf "%t" false)) }}
+  {{- if not (eq (printf "%s" $ingressRule.tls) (printf "%s" false)) }}
   - hosts:
     - {{ $ingressRule.host }}
-    {{- if eq (printf "%s" $ingressRule.tls) (printf "%t" true) }}
+    {{- if eq (printf "%s" $ingressRule.tls) (printf "%s" true) }}
     {{- if $.Values.ingress.name }}
     secretName: {{ $.Values.ingress.name | quote }}
     {{- else }}
@@ -96,5 +96,75 @@ spec:
   {{- end }}
   {{- end }}
   {{- end }}
+
+---
+
+
+{{- range $ingressRuleIndex, $ingressRule := $.Values.ingress.rules }}
+{{- if ne (printf "%s" $ingressRule.createCert) (printf "%s" false) }}
+
+{{- $tlsSecretName := "" }}
+{{- if and (not $ingressRule.tls) $.Values.ingress.tls }}
+{{- if not (eq (printf "%s" $.Values.ingress.tls) (printf "%s" false)) }}
+  {{- if eq (printf "%s" $.Values.ingress.tls) (printf "%s" true) }}
+  {{- if $.Values.ingress.name }}
+    {{- $tlsSecretName = $.Values.ingress.name }}
+  {{- else }}
+  {{- if $.Values.service.name }}
+    {{- $tlsSecretName = $.Values.service.name }}
+  {{- else }}
+    {{- $tlsSecretName = $.Release.Name }}
+  {{- end }}
+  {{- end }}
+  {{- else }}
+    {{- $tlsSecretName = $.Values.ingress.tls }}
+  {{- end }}
+{{- end }}
+{{- else }}
+{{- if $ingressRule.tls }}
+{{- if not (eq (printf "%s" $ingressRule.tls) (printf "%s" false)) }}
+  {{- if eq (printf "%s" $ingressRule.tls) (printf "%s" true) }}
+  {{- if $.Values.ingress.name }}
+    {{- $tlsSecretName = $.Values.ingress.name }}
+  {{- else }}
+  {{- if $.Values.service.name }}
+    {{- $tlsSecretName = $.Values.service.name }}
+  {{- else }}
+    {{- $tlsSecretName = $.Release.Name }}
+  {{- end }}
+  {{- end }}
+  {{- else }}
+    {{- $tlsSecretName = $ingressRule.tls }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if ne (printf "%s" $tlsSecretName) "" }}
+{{- if ne (regexMatch "^[^.]+\\.devspace\\.host$" $ingressRule.host) true }}
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ $tlsSecretName | quote }}
+spec:
+  acme:
+    config:
+    - domains:
+      - {{ $ingressRule.host }}
+      http01:
+        ingressClass: {{ $ingressRule.ingressClass | default "nginx" | quote }}
+  dnsNames:
+  - {{ $ingressRule.host }}
+  issuerRef:
+    kind: ClusterIssuer
+    name: {{ $ingressRule.tlsClusterIssuer | default "lets-encrypt-http-issuer" | quote }}
+  secretName: {{ $tlsSecretName | quote }}
+{{- end }}
+{{- end }}
+
+{{- end }}
+{{- end }}
+
+
 {{- end }}
 {{- end }}
