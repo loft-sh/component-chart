@@ -1,0 +1,16 @@
+version: v1beta6
+deployments:
+- name: component-chart-test
+  helm:
+    chart:
+      name: ../
+    values:
+      containers:
+      - image: nginx
+      service:
+        ports:
+        - port: 80
+      ingress:
+        tls: true
+        rules:
+        - host: ${DEVSPACE_SPACE_DOMAIN1}
