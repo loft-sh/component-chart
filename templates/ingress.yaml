@@ -34,8 +34,8 @@ spec:
     http:
       paths:
       - backend:
-          {{- if $.Values.ingress.serviceName }}
-          serviceName: {{ $.Values.ingress.serviceName | quote }}
+          {{- if $ingressRule.serviceName }}
+          serviceName: {{ $ingressRule.serviceName | quote }}
           {{- else }}
           {{- if $.Values.service.name }}
           serviceName: {{ $.Values.service.name | quote }}
