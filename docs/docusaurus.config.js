@@ -14,8 +14,8 @@ module.exports = {
         src: '/img/docs/component-chart/logo-component-chart.svg',
       },
       links: [
-        {to: 'docs/introduction', label: 'Docs', position: 'left'},
-        {href: '/blog', label: 'Blog', position: 'left'},
+        {to: 'docs/component-chart/introduction', label: 'Docs', position: 'left'},
+        {href: 'https://devspace.cloud/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/devspace-cloud/component-chart',
           label: 'GitHub',
@@ -30,45 +30,9 @@ module.exports = {
       algoliaOptions: {}
     },
     footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Style Guide',
-              to: 'pages/introduction',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'Social',
-          items: [
-            {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} DevSpace Technologies Inc.`,
+      style: 'light',
+      links: [],
+      copyright: `Copyright © ${new Date().getFullYear()} DevSpace Authors`,
     },
   },
   presets: [
@@ -77,7 +41,7 @@ module.exports = {
       {
         docs: {
           path: 'pages',
-          routeBasePath: 'docs',
+          routeBasePath: 'docs/component-chart',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/devspace-cloud/component-chart/edit/master/docs/',
