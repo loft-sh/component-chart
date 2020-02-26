@@ -1,5 +1,5 @@
 ---
-title: Configure Service
+title: Service (Internal Traffic)
 sidebar_label: service
 ---
 
@@ -8,6 +8,19 @@ In short, there is three things you need to know:
 1. Containers in the same component will be started within a Kubernetes pod which allows these containers to communicate via `localhost`.
 2. If you want containers to communicate across components (cluster-internal traffic), you need to define services for these components.
 3. If you want to connect a domain to a service (external internet traffic), you need to [configure an ingress for this service](../configuration/ingress.mdx).
+
+To allow other containers to access this component within the cluster-internal network (2.), you can configure the `service` section for the component:
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/database
+service:
+  ports:
+  - port: 3000
+```
+Now, the component is accessible via:
+```bash
+[HELM_RELEASE_NAME]:3000    # e.g. database:3000
+```
 
 
 ## `ports`
