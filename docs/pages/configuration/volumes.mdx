@@ -2,3 +2,21 @@
 title: Configure Volumes
 sidebar_label: volumes
 ---
+
+:::info
+View the [Persistent Volume Guide](../guides/persistent-volumes.mdx) for a step by step explanation.
+:::
+
+## `name`
+The `name` option is mandatory and expects a string with the name of this volume.
+
+
+## `size`
+The `size` option is used for persistent volumes and expects a string with the size of the persistent volume that should be provisioned.
+
+
+## `configMap`
+The `configMap` option is used for defining a Kubernetes ConfigMap as volume. It requires defining `configMap.name`.
+
+## `secret`
+The `configMap` option is used for defining a Kubernetes ConfigMap as volume. It requires defining `secret.secretName`.
