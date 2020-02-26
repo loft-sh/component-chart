@@ -2,3 +2,29 @@
 title: SSL Certificates for TLS
 sidebar_label: TLS / SSL Cerficates
 ---
+
+To enable TLS, you need an SSL certificate. When setting this option, the component chart will add an annotation to your ingress which tells cert-manager to privision an SSL certificate for all the hosts in this ingress.
+
+```yaml {7}
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  tls: true
+  rules:
+  - host: my-static-host.tld
+  - host: other-domain.tld
+    path: /login
+```
+
+:::warning
+Using `tls: true` requires that your Kubernetes cluster has cert-manager installed.
+:::
+
+## Check Certificate Status
+To check the status of all your SSL certificates (and see if cert-manager has already provisioned them via Letsencrypt), run the following command:
+```bash
+kubectl get certificate
+```

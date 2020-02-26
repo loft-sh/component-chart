@@ -3,25 +3,9 @@ title: Ingress (External Traffic)
 sidebar_label: ingress
 ---
 
-To automatically create an ingress for a component, you can configure the `ingress` section for the component:
-```yaml
-containers:
-- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
-service:
-  ports:
-  - port: 3000
-ingress:
-  tls: true
-  rules:
-  - host: my-static-host.tld
-  - host: ${DYNAMIC_HOSTNAME}
-    path: /login
-```
+import SectionIngressExample from '../sections/ingress-example.mdx';
 
-:::warning
-You need to define a `service` with at least one `port` to be able to use the `ingress` option.
-:::
-
+<SectionIngressExample/>
 
 ## `rules`
 The `rules` option expects an array of ingress rules that define how the incoming external traffic is routed by the ingress.
@@ -48,7 +32,7 @@ service:
 ingress:
   rules:
   - host: my-static-host.tld
-  - host: ${DYNAMIC_HOSTNAME}
+  - host: other-domain.tld
 ```
 
 
