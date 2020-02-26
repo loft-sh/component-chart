@@ -1,0 +1,29 @@
+---
+title: Headless Service (StatefulSet)
+sidebar_label: serviceName
+---
+
+The `serviceName` option expects a string that will be used as a name for the headless service if the component will be deployed as a StatefulSet instead of a Deployment. This happens automatically when one of the containers mounts a persistent volume.
+
+#### Default Value For `serviceName`
+```yaml
+serviceName: "[COMPONENT_NAME]-headless"
+```
+
+#### Example: Custom Name for Headless Service
+```yaml
+containers:
+- image: mysql
+  volumeMounts:
+  - containerPath: /var/lib/mysql
+    volume:
+      name: mysql-data
+      subPath: /mysql
+      readOnly: false
+volumes:
+- name: mysql-data
+  size: "5Gi"
+serviceName: "custom-name-for-headless-service"
+```
+**Explanation:**  
+Instead of the default name `backend-headless`, the headless service for the ReplicaSet created by this component would be `custom-name-for-headless-service`.

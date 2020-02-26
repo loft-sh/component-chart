@@ -1,0 +1,269 @@
+---
+title: Ingress (External Traffic)
+sidebar_label: ingress
+---
+
+import SectionIngressExample from '../sections/ingress-example.mdx';
+
+<SectionIngressExample/>
+
+## `rules`
+The `rules` option expects an array of ingress rules that define how the incoming external traffic is routed by the ingress.
+
+
+### `host`
+The `host` option expects a string stating the hostname (domain name) that the component should be made available on.
+
+:::note
+The component chart automatically makes sure that all hosts specified via `ingress.rules[].host` are connected to the `service` of the component.
+:::
+
+:::info Multiple Ports
+If the `service` of this component defines multiple `ports`, the component chart will use the first one unless you specify the [`servicePort` option](#serviceport).
+:::
+
+#### Example: Defining Hosts
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  rules:
+  - host: my-static-host.tld
+  - host: other-domain.tld
+```
+
+
+### `path`
+The `path` option expects a URL path which is used for routing. Only requests to this `path` will be forwarded to the service of this component.
+
+#### Default Value For `path`
+```yaml
+path: /
+```
+
+#### Example: Defining Ingress Paths
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  rules:
+  - host: my-static-host.tld
+    path: /login
+```
+
+
+### `servicePort`
+The `servicePort` option expects an integer stating the port of the service to which the traffic should be routed for the hostname stated in `host`.
+
+:::info Multiple Ports
+By default, the ingress will automatically route to the first port specified under `service.ports` within this component.
+:::
+
+#### Example: Custom Service Port
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+  - port: 8000
+ingress:
+  rules:
+  - host: my-static-host.tld
+    servicePort: 8000
+```
+
+
+### `serviceName`
+The `serviceName` option expects a string stating the name of the Kubernetes service to which the traffic should be routed for the hostname stated in `host`.
+
+:::note
+By default, the ingress will automatically route to the service defined in the `service` section within this component. Defining `serviceName` is generally only useful if you want to create a simple ingress for another service that has not been created by a component, e.g. from using one of the Helm charts from the stable repository.
+:::
+
+:::warning
+If `serviceName` is defined, `servicePort` must also be defined.
+:::
+
+#### Example: Custom Service Name
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+ingress:
+  rules:
+  - host: my-static-host.tld
+    serviceName: my-custom-k8s-service
+    servicePort: 8000
+```
+**Explanation:**  
+This example configuration would only create an ingress for a service called `my-custom-k8s-service` and forward the traffic from `my-static-host.tld` to port `8000` of this service.
+
+
+## `tls`
+The `tls` option expects either:
+- a string stating the name of a Kubernetes secret which contains the TLS certificate to use for SSL
+- a boolean to enable/disable TLS (an auto-generated name of a secret will be created referencing a Kubernetes secret containing the TLS certificate to use for SSL)
+
+#### Default Value For `tls`
+```yaml
+tls: false
+```
+
+#### Example: Enabling TLS for Ingress
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  tls: true
+  rules:
+  - host: my-static-host.tld
+  - host: my-static-host2.tld
+```
+
+## `tlsClusterIssuer`
+The `tlsClusterIssuer` option expects a string with the name of the cluster issuer for cert-manager.
+
+#### Default Value For `tlsClusterIssuer`
+```yaml
+tlsClusterIssuer: lets-encrypt-http-issuer
+```
+
+#### Example: Custom Cluster Issuer
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  tls: true
+  tlsClusterIssuer: staging-issuer
+  rules:
+  - host: my-static-host.tld
+  - host: my-static-host2.tld
+```
+
+## `ingressClass`
+The `ingressClass` option expects a string with a Kubernetes ingress class used for a cert-manager annotation.
+
+#### Default Value For `ingressClass`
+```yaml
+ingressClass: nginx
+```
+
+#### Example: Custom Ingress Class
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  ingressClass: traefik
+  tls: true
+  rules:
+  - host: my-static-host.tld
+  - host: my-static-host2.tld
+```
+
+
+## `name`
+The `name` option is optional and expects a string that will be used as a name for the ingress that is being created for this component.
+
+#### Example: Custom Name for Ingress
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  name: custom-ingress-name
+  tls: true
+  rules:
+  - host: my-static-host.tld
+  - host: my-static-host2.tld
+```
+**Explanation:**  
+Instead of the default name `frontend`, the ingress of this component would be named `custom-ingress-name`.
+
+
+## `labels`
+The `labels` option expects a map with Kubernetes labels. 
+
+By default, the component chart sets a couple of labels following the best practices described in the Kubernetes documentation:
+- `app.kubernetes.io/name: devspace-app`
+- `app.kubernetes.io/component: [DEPLOYMENT_NAME]`
+
+:::note
+You can specify additional labels using the `labels` option but the default / best practice labels will still be set for the component.
+:::
+
+All additional labels will be added to the ingress created for this component.
+
+#### Default Value For `labels`
+```yaml
+labels: []
+```
+
+#### Example: Additional Labels
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  tls: true
+  rules:
+  - host: my-static-host.tld
+  - host: my-static-host2.tld
+  labels:
+    label1: label-value-1
+    label1: label-value-2
+```
+
+
+## `annotations`
+The `annotations` option expects a map with Kubernetes annotations. 
+
+By default, the component chart sets a couple of annotations following the best practices described in the Kubernetes documentation:
+- `helm.sh/chart: component-chart-vX.Y.Z`
+
+:::note
+You can specify additional annotations using the `annotations` option but the default / best practice annotations will still be set for the component.
+:::
+
+All additional annotations will be added to the ingress created for this component.
+
+#### Default Value For `annotations`
+```yaml
+annotations: []
+```
+
+#### Example: Additional Annotations
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  tls: true
+  rules:
+  - host: my-static-host.tld
+  - host: my-static-host2.tld
+  annotations:
+    annotation1: annotation-value-1
+    annotation1: annotation-value-2
+```
+

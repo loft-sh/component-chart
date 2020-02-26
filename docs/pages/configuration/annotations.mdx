@@ -1,0 +1,29 @@
+---
+title: Pod Annotations
+sidebar_label: annotations
+---
+
+The `annotations` option expects a map with Kubernetes annotations. 
+
+By default, the component chart sets a couple of annotations following the best practices described in the Kubernetes documentation:
+- `helm.sh/chart: component-chart-vX.Y.Z`
+
+:::note
+You can specify additional annotations using the `annotations` option but the default / best practice annotations will still be set for the component.
+:::
+
+All additional annotations will be added to the pods of this component as well as to your Deployments or StatefulSets used to create the pods.
+
+#### Default Value For `annotations`
+```yaml
+annotations: []
+```
+
+#### Example: Additional Annotations
+```yaml
+containers:
+- image: john/appbackend
+annotations:
+  annotation1: annotation-value-1
+  annotation1: annotation-value-2
+```

@@ -1,0 +1,49 @@
+---
+title: "Component Chart: Usage"
+sidebar_label: Usage
+---
+
+## Install Chart
+```bash
+helm install -n my-namespace my-component https://charts.devspace.sh/component-chart
+```
+
+## Upgrade Chart
+```bash
+helm upgrade -n my-namespace my-component  https://charts.devspace.sh/component-chart
+```
+
+## Delete Chart
+```bash
+helm uninstall -n my-namespace my-component
+```
+
+## Use with DevSpace
+To use the component chart with DevSpace CLI, add a helm chart deployment to `devspace.yaml` which defines `componentChart: true` or references the component chart using the `chart` options.
+```yaml
+deployments:
+- name: my-component
+  helm:
+    componentChart: true
+    values:
+      containers:
+      - image: "dscr.io/username/mysql"
+        volumeMounts:
+        - containerPath: /var/lib/mysql
+          volume:
+            name: mysql-data
+            subPath: /mysql
+            readOnly: false
+      volumes:
+      - name: mysql-data
+        size: "5Gi"
+```
+
+:::info
+The `values` for the component chart can be defined in the `values` section of the deployment directly inside `devspace.yaml` (see example above).
+:::
+
+Deploy the chart using:
+```bash
+devspace deploy
+```

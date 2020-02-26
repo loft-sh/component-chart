@@ -1,0 +1,47 @@
+---
+title: Pod Auto-Scaling
+sidebar_label: autoScaling
+---
+
+To enable horizontal auto-scaling for a component, you just need to set `autoScaling.horizontal.maxReplicas` greater than the [value for `replicas`](../configuration/replicas.mdx). Additionally, you should configure one or multiple of the target value parameters, `averageCPU` and `averageMemory`. These target values define how the autoscaler will set the number of replicas to achieve an average CPU utilization and/or an average memory usage by the pods that will be scaled within this component.
+
+```yaml
+replicas: 4
+autoScaling:
+  horizontal:
+    maxReplicas: 10
+    averageCPU: 800m
+    averageRelativeMemory: 50
+```
+The above example would create an [horizontal pod autoscaler in Kubernetes](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) which is configured to:
+
+- create at least 4 pods for the component
+- scale the component up to a maximum of 10 pods
+- observe the CPU usage of all replicas and try to scale between 4 and 10 replicas to achieve an average CPU utilization of 800m
+- observe the memory usage of all replicas and try to scale between 4 and 10 replicas to achieve an average memory utilization of 50% (of the requested memory)
+
+
+## `horizontal`
+
+### `maxReplicas`
+The `maxReplicas` option expects an integer with the maximum number of replicas that the autoscaler is allowed to create.
+
+:::info Min Replicas
+The `minReplicas` for the autoscaler will be defined by the [`replicas` option](../configuration/replicas.mdx) for the component.
+:::
+
+
+### `averageCPU`
+The `averageCPU` option expects a fixed amount of CPU. The autoscaler will try to achieve that on average, all replicas use this much CPU.
+
+
+### `averageRelativeCPU`
+The `averageRelativeCPU` option expects a percentage number **<u>without</u> `%` suffix**. The autoscaler will try to achieve that on average, all replicas use this much CPU relative to the amount of CPU each replica has requested.
+
+
+### `averageMemory`
+The `averageMemory` option expects a fixed amount of memory. The autoscaler will try to achieve that on average, all replicas use this much memory.
+
+
+### `averageRelativeMemory`
+The `averageRelativeMemory` option expects a percentage number **<u>without</u> `%` suffix**. The autoscaler will try to achieve that on average, all replicas use this much memory relative to the amount of memory each replica has requested.

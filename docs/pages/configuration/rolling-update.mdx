@@ -1,0 +1,72 @@
+---
+title: Rolling Updates
+sidebar_label: rollingUpdate
+---
+
+import SectionRollingUpdateEnabled from '../sections/rolling-update-enabled.mdx';
+
+The `rollingUpdate` option the Kubernetes configuration for rolling updates. 
+```yaml
+rollingUpdate:
+  enabled: true
+  maxSurge: "100%"
+  maxUnavailable: "50%"
+```
+
+## For Deployments
+The following fields are supported for **Deployments** (none of the containers mounts any persistent volumes):
+- `enabled`
+- `maxSurge`
+- `maxUnavailable`
+
+#### Example: Enabling Rolling Updates for Deployments
+```yaml
+containers:
+- image: john/appbackend
+rollingUpdate:
+  enabled: true
+  maxSurge: "100%"
+  maxUnavailable: "50%"
+```
+
+### `enabled`
+
+<SectionRollingUpdateEnabled/>
+
+
+### `maxSurge`
+The `maxSurge` option expects a string defining a percentage of pods that can be created above the desired number of replicas.
+
+#### Default Value For `maxSurge`
+```yaml
+maxSurge: "25%"
+```
+
+
+### `maxUnavailable`
+The `maxUnavailable` option expects a string defining a percentage of pods that can be unavailable during an update.
+
+#### Default Value For `maxUnavailable`
+```yaml
+maxUnavailable: "0%"
+```
+
+
+
+## For StateFulSets
+The following fields are supported for **StatefulSets** (at least one of the containers mounts a persistent volume):
+- `enabled`
+- `partition`
+
+### `enabled`
+
+<SectionRollingUpdateEnabled/>
+
+
+### `partition`
+The `partition` option expects an integer that tells Kubernetes to only update pods with an ordinal number greater than or equal this value.
+
+#### Default Value For `partition`
+```yaml
+partition: 1
+```

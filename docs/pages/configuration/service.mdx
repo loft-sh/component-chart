@@ -1,0 +1,84 @@
+---
+title: Service (Internal Traffic)
+sidebar_label: service
+---
+
+In short, there is three things you need to know:
+
+1. Containers in the same component will be started within a Kubernetes pod which allows these containers to communicate via `localhost`.
+2. If you want containers to communicate across components (cluster-internal traffic), you need to define services for these components.
+3. If you want to connect a domain to a service (external internet traffic), you need to [configure an ingress for this service](../configuration/ingress.mdx).
+
+To allow other containers to access this component within the cluster-internal network (2.), you can configure the `service` section for the component:
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/database
+service:
+  ports:
+  - port: 3000
+```
+Now, the component is accessible via:
+```bash
+[HELM_RELEASE_NAME]:3000    # e.g. database:3000
+```
+
+
+## `ports`
+The `ports` option is mandatory and expects an array of port definitions.
+
+
+### `port`
+The `port` option is mandatory and expect an integer with a port number. The service will be available on this port.
+
+
+### `targetPort`
+The `targetPort` option is optional and tells the service to forward the traffic from the service port (defined in `port`) to a different `targetPort` of a pod.
+
+#### Default for `targetPort`
+```yaml
+targetPort: [same as `port` option]
+```
+
+
+### `protocol`
+The `protocol` option is optional and expects a string that defines the network protocol for this service port.
+
+#### Default for `protocol`
+```yaml
+protocol: TCP
+```
+
+
+### `name`
+The `name` option is optional and expects a string that defines the name for this service port (default is auto-generated).
+
+
+## `type`
+The `type` option is optional and expects a string that defines the type of the service.
+
+#### Default for `type`
+```yaml
+type: ClusterIP
+```
+
+
+## `externalIPs`
+The `externalIPs` option is optional and expects an array of IP addresses for the service.
+
+
+## `name`
+The `name` option is optional and expects a string that defines the name of the service.
+
+#### Default for `name`
+```yaml
+name: [HELM_RELEASE_NAME]
+```
+
+
+## `labels`
+The `labels` option is optional and expects an array of additional Kubernetes labels for the service.
+
+
+## `annotations`
+The `annotations` option is optional and expects an array of additional Kubernetes annotations for the service.
+

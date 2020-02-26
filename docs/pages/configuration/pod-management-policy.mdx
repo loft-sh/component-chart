@@ -1,0 +1,18 @@
+---
+title: Pod Management Policy
+sidebar_label: podManagementPolicy
+---
+
+The `podManagementPolicy` option expects a string which sets the [`podManagementPolicy` Kubernetes attribute for a StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies).
+
+#### Default Value For `podManagementPolicy`
+```yaml
+podManagementPolicy: OrderedReady
+```
+
+#### Example: Custom Name for Headless Service
+```yaml
+containers:
+- image: john/appbackend
+podManagementPolicy: Parallel
+```

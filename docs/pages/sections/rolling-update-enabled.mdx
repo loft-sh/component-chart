@@ -1,0 +1,10 @@
+The `enabled` option expects a boolean and defines if rolling updates should be enabled or disabled.
+
+#### Default Value For `enabled`
+```yaml
+enabled: false
+```
+
+:::info
+If `enabled = true`, the Kubernetes rolling update type will be set to `RollingUpdate` (default: `Recreate`).
+:::

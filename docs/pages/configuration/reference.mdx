@@ -1,0 +1,121 @@
+---
+title: Config Reference
+sidebar_label: values.yaml
+---
+
+import SectionConfigContainers from '../sections/config-containers.mdx';
+
+## `containers`
+
+<SectionConfigContainers/>
+
+
+## `initContainers`
+
+<SectionConfigContainers/>
+
+## `labels`
+```yaml
+labels:                     # map       | Map of additional labels (optional)
+  labelName1: labelValue1
+  labelName2: labelValue2
+```
+
+## `annotations`
+```yaml
+annotations:                # map       | Map of additional annotations (optional)
+  annotationName1: annotationValue1
+  annotationName2: annotationValue2
+```
+
+## `volumes`
+```yaml
+volumes:                    # struct[]  | Array of volumes for this component
+- name: some-volume         # string    | Name of the volume
+  size: 2Gi                 # string    | Size of the volume (for Persistent Volumes)
+  configMap:                # struct    | ConfigMap reference (for ConfigMap Volumes)
+    name: my-config         # string    | Name of the configmap
+  secret:                   # struct    | Secret reference (for Secret Volumes)
+    secretNme: my-secret    # string    | Name of the secret
+```
+
+## `service`
+```yaml
+service:                    # struct    | Service of this component
+  ports:                    # struct    | Array of ports for this service
+  - port: 8080              # int       | Port of service
+    targetPort: 80          # int       | Port of pod to forward traffic to (default: same as port)
+    protocol: TCP           # string    | Network protocol (default: TCP)
+    name: http              # string    | Name of this port (optional)
+  type: ClusterIP           # string    | Kubernetes service type (default: ClusterIP)
+  externalIPs:              # string[]  | Array of external IP addresses for service (optional)
+  - "244.485.47.5"
+  name: my-service          # string    | Name of the service (optional, default: name of component release)
+  labels:                   # map       | Map of additional labels (optional)
+    labelName1: labelValue1
+    labelName2: labelValue2
+  annotations:              # map       | Map of additional annotations (optional)
+    annotationName1: annotationValue1
+    annotationName2: annotationValue2
+```
+
+## `serviceName`
+```yaml
+serviceName: my-service     # string    | Name of headless service (for Kubernetes StatefulSet = if at least one volume is mounted in containers)
+```
+
+## `ingress`
+```yaml
+ingress:                    # struct    | Ingress for component
+  rules:                    # struct[]  | Array of ingress rules for component
+  - host: my-hostname.tld   # string    | Hostname for ingress rule
+    path: /                 # string    | Host path for ingress rule (default: /)
+    servicePort: 
+    serviceName:
+  tls: true                 # boolean OR string | True (for auto-generated secert name) or name of secret with SSL certificate (default: false)
+  tlsClusterIssuer: lets-encrypt-http-issuer # string   | Name of tls cluster issuer (letsencrypt, cert-manager)
+  ingressClass: nginx       # string    | Ingress class for certificate provisioning
+  name: my-ingress          # string    | Name of the ingress (optional, default: name of component release)
+  labels:                   # map       | Map of additional labels (optional)
+    labelName1: labelValue1
+    labelName2: labelValue2
+  annotations:              # map       | Map of additional annotations (optional)
+    annotationName1: annotationValue1
+    annotationName2: annotationValue2
+```
+
+## `replicas`
+```yaml
+replicas: 3                 # int       | Number of replicas of component
+```
+
+## `autoScaling`
+```yaml
+autoScaling:                # struct    | Autoscaler configuration
+  horizontal:               # struct    | Horizontal autoscaler configuration
+    maxReplicas: 5          # int       | Max number of replicas
+    averageCPU: 500m        # string    | Target CPU value (average)
+    averageRelativeCPU: 80  # int       | Target CPU value relative to requested CPU  for containers (average)
+    averageMemory: 2Gi      # string    | Target memory value (average)
+    averageRelativeMemory: 50 # int     | Target memory value relative to requested memory for containers (average)
+```
+
+## `rollingUpdate`
+```yaml
+rollingUpdate:              # struct    | Rolling update configuration
+  enabled: false            # boolean   | Enable/disable rolling updates (default: false)
+  maxSurge: "50%"           # string    | Max relative amount of pods that can be created above the desired number of replicas
+  maxUnavailable: "30%"     # string    | Max relative amount of pods that can be unavailable during rolling update
+  partition: 3              # int       | Only update pods with ordinal number greater than or equal this value (pods 1+2 will not be updated, default: 1)
+```
+
+## `pullSecrets`
+```yaml
+pullSecrets:                # string[]  | Array of Kubernetes secrets used as image pull secrets
+- some-secret
+```
+
+## `podManagementPolicy`
+```yaml
+podManagementPolicy: OrderedReady # string    | Kubernetes Pod Management Policy (default: OrderedReady)
+```
