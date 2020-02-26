@@ -12,13 +12,8 @@ module.exports = {
       id: 'introduction',
     },
     {
-      type: 'category',
-      label: 'Usage',
-      items: [
-        'usage/deploy',
-        'usage/upgrade',
-        'usage/delete',
-      ],
+      type: 'doc',
+      id: 'usage',
     },
     {
       type: 'category',
