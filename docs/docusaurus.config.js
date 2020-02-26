@@ -11,7 +11,7 @@ module.exports = {
     navbar: {
       logo: {
         alt: 'DevSpace',
-        src: '/img/docs/component-chart/logo-devspace.svg',
+        src: '/img/docs/component-chart/logo-component-chart.svg',
       },
       links: [
         {to: 'docs/introduction', label: 'Docs', position: 'left'},
