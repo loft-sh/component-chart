@@ -1,0 +1,26 @@
+```yaml
+containers:                   # struct[]  | Array of containers
+- name: some-container        # string    | Container name (optional)
+  image: mysql                # string    | Container image
+  command:                    # string[]  | Override image ENTRYPOINT
+  - "sleep"
+  args:                       # string[]  | Override image CMD
+  - "99999"
+  stdin: false                # boolean   | Set container stdin (default: false)
+  tty: false                  # boolean   | Set container tty (default: false)
+  env:                        # struct[]  | Array of environment variables for container
+  - name: SOME_ENV_VAR        # string    | Name of environment variable
+    value: "some-value"       # string    | Value of environment variable
+    valueFrom: ...            # struct    | Get value of environment variable from Kubernetes object (e.g. configmap, secret)
+  volumeMounts:               # struct[]  | Array of volume mounts
+  - containerPath: /volume    # string    | Path inside container to mount volume into
+    volume:                   # struct    | Volume to mount
+      name: some-volume       # string    | Name of the volume to mount
+      subPath: /some/path     # string    | Mount subPath within volume (optional)
+      readOnly: false         # boolean   | Make volume mount read-only (default: false)
+  resources:                  # struct    | Pod Resource Restrictions
+    limits: ...               # struct    | Kubernetes limit for pod resources (max)
+    requests: ...             # struct    | Kubernetes requests for pod resources (min)
+  livenessProbe: ...          # struct    | Kubernetes livenessProbe
+  readinessProbe: ...         # struct    | Kubernetes readinessProbe
+```
