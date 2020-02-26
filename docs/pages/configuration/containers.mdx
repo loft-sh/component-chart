@@ -2,3 +2,189 @@
 title: Configure Containers
 sidebar_label: containers
 ---
+
+Components are deployed as Kubernetes Deployment or StatefulSet (if one of the containers mounts a value). These Kubernetes resources create a certain number of pods which are a set of containers. These containers are created based on images. 
+
+## `name`
+The `name` option is optional and expects a string with the name for the Deployment or StatefulSet.
+
+#### Default Value for `name`
+```yaml
+name: [HELM_RELEASE_NAME]
+```
+
+## `image`
+The `image` option is mandatory and expects a string with the image repository (optionally including an image tag).
+
+#### Example: Set `image` for containers
+```yaml
+containers:
+- image: dscr.io/username/my-backend-image
+- image: nginx:1.15
+```
+The example above would create a pod with two containers:
+
+1. The first container would be create from the image `dscr.io/username/my-backend-image`
+2. The second container would be created from the `nginx` image on [Docker Hub](https://hub.docker.com) which is tagged as version `1.15`
+
+
+## `command`
+The `command` option is optional and expects an array of strings. This option is used to override the `ENTRYPOINT` specified in the Dockerfile.
+
+#### Example: Set `command` and `args` for containers
+```yaml
+containers:
+- image: dscr.io/username/api-server
+  command:
+  - sleep
+  args:
+  - 9999999
+```
+The above example would start the container effectively with the following process: `sleep 9999999`
+
+For more information, please take a look at the [Kubernetes documentation for setting command and args](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/).
+
+
+## `args`
+The `args` option is optional and expects an array of strings. This option is used to override the `CMD` specified in the Dockerfile.
+
+
+## `stdin`
+The `stdin` option is optional and expects a boolean which defines if stdin should be enabled for this container.
+
+
+## `tty`
+The `tty` option is optional and expects a boolean which defines if tty should be enabled for this container.
+
+
+## `env`
+The `env` option is optional and expects an array of environment variables for this container. 
+
+`env.name` specifies the name of the environment variable.
+
+The value of an environment variable is defined either:
+
+1. By directly inserting the value via `env.value`
+2. By referencing a key within a secret via `env.valueFrom.secretKeyRef`
+3. By referencing a key within a configMap via `env.valueFrom.configMapKeyRef`
+4. By using any other field supported for `env.valueFrom` as defined by the [Kubernetes specification for `v1.EnvVarSource`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.13/#envvarsource-v1-core)
+
+:::tip
+Instead of storing configuration data (e.g. database host, username and password) inside your Docker image, you should define such information as environment variables.
+:::
+
+#### Example: Set `env` for containers
+```yaml
+containers:
+- image: "dscr.io/username/mysql"
+  env:
+  - name: MYSQL_USER
+    value: "my_user"
+  - name: MYSQL_PASSWORD
+    value: "my-secret-passwd"
+```
+The above example would set two environment variables, `MYSQL_USER="my_user"` and `MYSQL_PASSWORD="my-secret-passwd"` within the first container of the `database` component.
+
+
+#### Reference: `env`
+```yaml
+name: [a-z0-9-]{1,253}      # Name of the environment variable
+value: [string]             # Option 1: Set static value for the environment variable
+valueFrom:                  # Option 2: Load value from another resource
+  secretKeyRef:             # Option 2.1: Use the content of a Kubernetes secret as value
+    name: [secret-name]     # Name of the secret
+    key: [key-name]         # Key within the secret
+  configMapKeyRef:          # Option 2.2: Use the content of a Kubernetes configMap as value
+    name: [configmap-name]  # Name of the config map
+    key: [key-name]         # Key within the config map
+```
+
+## `volumeMounts`
+The `volumeMounts` option excepts an array of volumes which should be mounted into this container.
+
+### `containerPath`
+The `containerPath` option expects a string with a path that defines where the volume should be mounted within the container.
+
+#### Example: Mounting Volumes
+```yaml
+containers:
+- image: "dscr.io/username/mysql"
+  volumeMounts:
+  - containerPath: /var/lib/mysql
+    volume:
+      name: mysql-data
+      subPath: /mysql
+      readOnly: false
+volumes:
+- name: mysql-data
+  size: "5Gi"
+```
+The example above would create a volume called `mysql-data` for the component `my-component` and mount the folder `/mysql` within this volume into the path `/var/lib/mysql` within a container of this component.
+
+By mounting this volume to `/var/lib/mysql`, you allow the container to edit the files and folder contained within `/var/lib/mysql` and restart without losing these changes.
+
+### `volume.name`
+The `volume.name` option is mandatory and expects a string with the name of the volume that should be mounted.
+
+### `volume.subPath`
+The `volume.subPath` option is optional and expects a string with a path within the volume that should be mounted into the container.
+
+### `volume.readOnly`
+The `volume.readOnly` option expects a boolean which defines if the volume should be mounted in read-only mode.
+
+#### Default for `volume.readOnly`
+```yaml
+readOnly: false
+```
+
+## `resources`
+The `resources` section of a container allows you to configure resource restrictions for this container.
+
+#### Types of Resources
+You can set resource limits and resource requests for the following resources:
+- CPU in Core units, i.e. 3 = 3 Cores, 800m = 0.8 Core (=800 **M**illi-Core)
+- Memory (RAM) in Gi (Gigabyte), Mi (Megabyte) or Ki (Kilobyte)
+- Emphemeral (non-persistent container) storage in Gi (Gigabyte), Mi (Megabyte) or Ki (Kilobyte)
+
+### `limits`
+To limit the resources of a container, simply configure the `limits` within the `resources` section of the container.
+```yaml
+containers:
+- image: dscr.io/username/api-server
+  resources:
+    limits:
+      cpu: 400m
+      memory: 500Mi
+      ephemeralStorage: 2Gi
+```
+The above example would define that this container can use a maximum of:
+- 0.4 Cores
+- 500 Megabytes of Memory (RAM)
+- 2 Gigabytes of ephemeral storage
+
+:::warning
+Resource limits should always be higher than the resource requests. Because resource limits are not allocated/reserved for a container (unlike resource requests), it is possible to oversubscribe resource limits, i.e. use a total of resource limits over all containers which is more than the cluster has.
+:::
+
+### `requests`
+To allocate/reserve resources for a container, simply configure the `requests` within the `resources` section of the container.
+```yaml
+containers:
+- image: dscr.io/username/api-server
+  resources:
+    requests:
+      cpu: 200m
+      memory: 300Mi
+      ephemeralStorage: 1Gi
+```
+The above example would define that this container can use a maximum of:
+- 0.2 Cores
+- 300 Megabytes of Memory (RAM)
+- 1 Gigabytes of ephemeral storage
+
+## `livenessProbe`
+The `livenessProbe` option is optional and expects a [Kubernetes livenessProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+
+
+## `readinessProbe`
+The `readinessProbe` option is optional and expects a [Kubernetes readinessProbe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
