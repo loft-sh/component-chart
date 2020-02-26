@@ -16,7 +16,7 @@ on:
 
 env:
   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-  NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  NETLIFY_ACCESS_TOKEN: ${{ secrets.NETLIFY_ACCESS_TOKEN }}
   OUT_DIR: build/
 
 jobs:
@@ -36,13 +36,13 @@ jobs:
         run: |
           npm install -g netlify-cli
 
-          if [ ! -z "$NETLIFY_AUTH_TOKEN" ]
+          if [ ! -z "$NETLIFY_ACCESS_TOKEN" ]
           then
-            netlify deploy --auth=$NETLIFY_AUTH_TOKEN --site=$NETLIFY_SITE_ID --dir=$OUT_DIR
+            netlify deploy --auth=$NETLIFY_ACCESS_TOKEN --site=$NETLIFY_SITE_ID --dir=$OUT_DIR
           fi
         working-directory: ./docs
       - name: Deploy Production Site
         if: github.ref == 'refs/heads/master'
         run: |
-          netlify deploy --auth=$NETLIFY_AUTH_TOKEN --site=$NETLIFY_SITE_ID --dir=$OUT_DIR --prod
+          netlify deploy --auth=$NETLIFY_ACCESS_TOKEN --site=$NETLIFY_SITE_ID --dir=$OUT_DIR --prod
         working-directory: ./docs
