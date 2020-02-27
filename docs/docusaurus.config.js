@@ -43,7 +43,7 @@ module.exports = {
       {
         docs: {
           path: 'pages',
-          routeBasePath: 'docs/component-chart',
+          routeBasePath: 'docs',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/devspace-cloud/component-chart/edit/master/docs/',
