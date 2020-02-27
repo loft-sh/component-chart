@@ -1,8 +1,10 @@
+__webpack_public_path__ = "/component-chart/"
+
 module.exports = {
   title: 'Component Helm Chart | Documentation',
   tagline: 'The tagline of my site',
   url: 'https://devspace.sh',
-  baseUrl: '/',
+  baseUrl: __webpack_public_path__,
   favicon: '/img/docs/component-chart/favicon.png',
   organizationName: 'devspace-cloud', // Usually your GitHub org/user name.
   projectName: 'component-chart', // Usually your repo name.
