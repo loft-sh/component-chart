@@ -47,7 +47,7 @@ module.exports = {
     {
       type: 'link',
       label: '↗️ DevSpace CLI',
-      href: 'https://devspace.sh/docs/introduction',
+      href: 'https://devspace.sh/cli/docs/introduction',
     },
   ],
 };
