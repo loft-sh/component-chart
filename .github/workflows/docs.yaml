@@ -41,6 +41,8 @@ jobs:
             mv $OUT_DIR/* tmp-$TARGET_OUT_DIR
             mkdir -p $TARGET_OUT_DIR
             mv tmp-$TARGET_OUT_DIR/* $TARGET_OUT_DIR
+            
+            npm install -g netlify-cli
           fi
         working-directory: ./docs
       - name: Deploy Preview Site
@@ -48,7 +50,6 @@ jobs:
         run: |
           if [ ! -z "$NETLIFY_ACCESS_TOKEN" ]
           then
-            npm install -g netlify-cli
             netlify deploy --auth=$NETLIFY_ACCESS_TOKEN --site=$NETLIFY_SITE_ID --dir=$OUT_DIR
           fi
         working-directory: ./docs
