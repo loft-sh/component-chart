@@ -5,7 +5,7 @@ module.exports = {
   tagline: 'The tagline of my site',
   url: 'https://devspace.sh',
   baseUrl: __webpack_public_path__,
-  favicon: '/img/docs/component-chart/favicon.png',
+  favicon: '/img/favicon.png',
   organizationName: 'devspace-cloud', // Usually your GitHub org/user name.
   projectName: 'component-chart', // Usually your repo name.
   themeConfig: {
@@ -13,7 +13,7 @@ module.exports = {
     navbar: {
       logo: {
         alt: 'DevSpace',
-        src: '/img/docs/component-chart/logo-component-chart.svg',
+        src: '/img/logo-component-chart.svg',
       },
       links: [
         {to: 'docs/component-chart/introduction', label: 'Docs', position: 'left'},

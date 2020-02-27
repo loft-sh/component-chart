@@ -18,6 +18,7 @@ env:
   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
   NETLIFY_ACCESS_TOKEN: ${{ secrets.NETLIFY_ACCESS_TOKEN }}
   OUT_DIR: build/
+  TARGET_OUT_DIR: build/component-chart/
 
 jobs:
   run:
@@ -34,10 +35,11 @@ jobs:
         working-directory: ./docs
       - name: Deploy Preview Site
         run: |
-          npm install -g netlify-cli
-
           if [ ! -z "$NETLIFY_ACCESS_TOKEN" ]
           then
+            mkdir -p $TARGET_OUT_DIR
+            mv $OUT_DIR/* $TARGET_OUT_DIR
+            npm install -g netlify-cli
             netlify deploy --auth=$NETLIFY_ACCESS_TOKEN --site=$NETLIFY_SITE_ID --dir=$OUT_DIR
           fi
         working-directory: ./docs
