@@ -14,9 +14,10 @@ module.exports = {
       logo: {
         alt: 'DevSpace',
         src: '/img/logo-component-chart.svg',
+        href: '/',
       },
       links: [
-        {to: 'docs/component-chart/introduction', label: 'Docs', position: 'left'},
+        {to: 'docs/introduction', label: 'Docs', position: 'left'},
         {href: 'https://devspace.cloud/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/devspace-cloud/component-chart',
