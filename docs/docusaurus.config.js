@@ -27,15 +27,15 @@ module.exports = {
       ],
     },
     algolia: {
-      apiKey: "4339e8c4d6313d53209b996a35e7c0d5",
-      indexName: "devspace",
+      apiKey: "9d69b60ed293cfed074242922dbc2a6b",
+      indexName: "devspace-component-chart",
       placeholder: "Search...",
       algoliaOptions: {}
     },
     footer: {
       style: 'light',
       links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} DevSpace Authors`,
+      copyright: `Copyright © ${new Date().getFullYear()} Component Chart Authors`,
     },
   },
   presets: [
@@ -59,6 +59,11 @@ module.exports = {
     {
       src:
         'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js',
+      async: true,
+    },
+    {
+      src:
+        'https://devspace.sh/docs.js',
       async: true,
     },
   ],
