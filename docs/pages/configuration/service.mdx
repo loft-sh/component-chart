@@ -31,12 +31,12 @@ The `ports` option is mandatory and expects an array of port definitions.
 The `port` option is mandatory and expect an integer with a port number. The service will be available on this port.
 
 
-### `targetPort`
-The `targetPort` option is optional and tells the service to forward the traffic from the service port (defined in `port`) to a different `targetPort` of a pod.
+### `containerPort`
+The `containerPort` option is optional and tells the service to forward the traffic from the service port (defined in `port`) to a different `containerPort` of a pod.
 
-#### Default for `targetPort`
+#### Default for `containerPort`
 ```yaml
-targetPort: [same as `port` option]
+containerPort: [same as `port` option]
 ```
 
 
@@ -47,10 +47,6 @@ The `protocol` option is optional and expects a string that defines the network 
 ```yaml
 protocol: TCP
 ```
-
-
-### `name`
-The `name` option is optional and expects a string that defines the name for this service port (default is auto-generated).
 
 
 ## `type`
