@@ -90,6 +90,14 @@ spec:
         {{- range $secretIndex, $secretName := $.Values.pullSecrets }}
         - name: {{ $secretName | quote }}
         {{- end }}
+      nodeSelector:
+{{ toYaml $.Values.nodeSelector | indent 8 }}
+      nodeName:
+{{ toYaml $.Values.nodeName | indent 8 }}
+      affinity:
+{{ toYaml $.Values.affinity | indent 8 }}
+      tolerations:
+{{ toYaml $.Values.tolerations | indent 8 }}
       containers:
         {{- range $containerIndex, $container := $.Values.containers }}
         - image: {{ $container.image | quote }}

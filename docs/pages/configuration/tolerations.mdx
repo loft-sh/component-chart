@@ -1,0 +1,22 @@
+---
+title: Tolerations For Scheduling
+sidebar_label: tolerations
+---
+
+The `tolerations` option expects an object which sets the [`tolerations` Kubernetes attribute for Pods](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).
+
+#### Default Value For `tolerations`
+```yaml
+tolerations: {}
+```
+
+#### Example: Setting Tolerations For Scheduling
+```yaml
+containers:
+- image: john/appbackend
+tolerations:
+- key: "node.kubernetes.io/unreachable"
+  operator: "Exists"
+  effect: "NoExecute"
+  tolerationSeconds: 6000
+```

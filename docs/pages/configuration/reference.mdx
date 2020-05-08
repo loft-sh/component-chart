@@ -115,6 +115,26 @@ pullSecrets:                # string[]  | Array of Kubernetes secrets used as im
 - some-secret
 ```
 
+## `affinity`
+```yaml
+affinity: {}               # struct    | Kubernetes affinity to consider when scheduling pod
+```
+
+## `nodeSelector`
+```yaml
+nodeSelector: {}           # struct    | Kubernetes node selector to consider when scheduling pod
+```
+
+## `nodeName`
+```yaml
+nodeName: "node-name"      # string    | Kubernetes node name to schedule pod on
+```
+
+## `tolerations`
+```yaml
+tolerations: {}            # struct    | Kubernetes tolerations to consider when scheduling pod
+```
+
 ## `podManagementPolicy`
 ```yaml
 podManagementPolicy: OrderedReady # string    | Kubernetes Pod Management Policy (default: OrderedReady)
