@@ -1,0 +1,19 @@
+---
+title: Node Selector For Scheduling
+sidebar_label: nodeSelector
+---
+
+The `nodeSelector` option expects an object which sets the [`nodeSelector` Kubernetes attribute for Pods](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeSelector).
+
+#### Default Value For `nodeSelector`
+```yaml
+nodeSelector: {}
+```
+
+#### Example: Setting Node Selector For Scheduling
+```yaml
+containers:
+- image: john/appbackend
+nodeSelector:
+  disktype: ssd
+```

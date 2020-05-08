@@ -1,0 +1,27 @@
+---
+title: Affinity For Scheduling
+sidebar_label: affinity
+---
+
+The `affinity` option expects an object which sets the [`affinity` Kubernetes attribute for Pods](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity).
+
+#### Default Value For `affinity`
+```yaml
+affinity: {}
+```
+
+#### Example: Setting Affitiny For Scheduling
+```yaml
+containers:
+- image: john/appbackend
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - store
+      topologyKey: "kubernetes.io/hostname"
+```

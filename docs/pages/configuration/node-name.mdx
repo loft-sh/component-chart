@@ -1,0 +1,18 @@
+---
+title: Node Name For Scheduling
+sidebar_label: nodeName
+---
+
+The `nodeName` option expects a string which sets the [`nodeName` Kubernetes attribute for Pods](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodename).
+
+#### Default Value For `nodeName`
+```yaml
+nodeName: ""
+```
+
+#### Example: Setting Node Name For Scheduling
+```yaml
+containers:
+- image: john/appbackend
+nodeName: "gpu-node"
+```
