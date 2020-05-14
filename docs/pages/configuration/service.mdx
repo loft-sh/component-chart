@@ -39,6 +39,15 @@ The `containerPort` option is optional and tells the service to forward the traf
 containerPort: [same as `port` option]
 ```
 
+### `name`
+The `name` option is optional and allows you to customize the name of the port. 
+
+#### Default for `name`
+By default the port name will be "port-0", "port-1" etc.
+
+```yaml
+name: port-0
+```
 
 ### `protocol`
 The `protocol` option is optional and expects a string that defines the network protocol for this service port.
