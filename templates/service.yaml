@@ -26,7 +26,11 @@ spec:
     {{- end }}
   ports:
     {{- range $portMapIndex, $portMap := $.Values.service.ports }}
+    {{- if $portMap.name }}
+    - name: {{ $portMap.name }}
+    {{- else }}
     - name: "port-{{ $portMapIndex }}"
+    {{- end }}
       port: {{ $portMap.port }}
       {{- if $portMap.containerPort }}
       targetPort: {{ $portMap.containerPort }}
