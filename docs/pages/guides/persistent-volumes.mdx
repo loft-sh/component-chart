@@ -7,7 +7,7 @@ Generally, containers are stateless. That means that whenever you write anything
 
 Altough it is recommend to keep your applications as stateless as possible, sometimes you will need to store data in a directory that should "survive" a container restart, e.g. the data directory within a database container (e.g. `/var/lib/mysql` for mysql).
 
-Persistent volumes allow you to define a virtual device which is independent of your containers an can be mounted into the containers. An analogy would be a USB stick (persistent volume) that you plug into a computer (container) which always resets the in-build hard drive on every restart.
+Persistent volumes allow you to define a virtual device which is independent of your containers and can be mounted into the containers. An analogy would be a USB stick (persistent volume) that you plug into a computer (container) which always resets the in-build hard drive on every restart.
 
 When you want to persist a folder within a container of one of your components, you need to:
 
@@ -106,7 +106,7 @@ volumes:
 - name: mysql-data
   size: "5Gi"
 ```
-The example above would create a volume called `mysql-data` for the component `my-component` and mount the folder `/mysql` within this volume into the path `/var/lib/mysql` within a container of this component. By mounting this volume to `/var/lib/mysql`, you allow the container to edit the files and folder contained within `/var/lib/mysql` and restart without losing these changes.
+The example above would create a volume called `mysql-data` for the component `my-component` and mount the folder `/mysql` within this volume into the path `/var/lib/mysql` within a container of this component. By mounting this volume to `/var/lib/mysql`, you allow the container to edit the files and folders contained within `/var/lib/mysql` and restart without losing these changes.
 
 <details>
 <summary>View the specification for volume mounts</summary>

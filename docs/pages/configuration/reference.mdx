@@ -44,9 +44,8 @@ volumes:                    # struct[]  | Array of volumes for this component
 service:                    # struct    | Service of this component
   ports:                    # struct    | Array of ports for this service
   - port: 8080              # int       | Port of service
-    targetPort: 80          # int       | Port of pod to forward traffic to (default: same as port)
+    containerPort: 80       # int       | Port of pod to forward traffic to (default: same as port)
     protocol: TCP           # string    | Network protocol (default: TCP)
-    name: http              # string    | Name of this port (optional)
   type: ClusterIP           # string    | Kubernetes service type (default: ClusterIP)
   externalIPs:              # string[]  | Array of external IP addresses for service (optional)
   - "244.485.47.5"
