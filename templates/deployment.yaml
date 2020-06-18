@@ -340,9 +340,38 @@ spec:
     {{- if $isVolumeTemplateOfThisComponent }}
   - metadata:
       name: {{ $volume.name | quote }}
+      labels:
+        "app.kubernetes.io/name": "devspace-app"
+        "app.kubernetes.io/component": {{ $.Release.Name | quote }}
+        "app.kubernetes.io/managed-by": {{ $.Release.Service | quote }}
+        {{- range $labelName, $labelValue := $volume.labels }}
+        {{ $labelName | quote }}: {{ $labelValue | quote }}
+        {{- end }}
+      annotations:
+        "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+        {{- range $annotationName, $annotationValue := $volume.annotations }}
+        {{ $annotationName | quote }}: {{ $annotationValue | quote }}
+        {{- end }}
     spec:
+      {{- if $volume.storageClassName }}
+      storageClassName: {{ $volume.storageClassName }}
+      {{- end }}
+      {{- if $volume.volumeMode }}
+      volumeMode: {{ $volume.volumeMode }}
+      {{- end }}
+      {{- if $volume.volumeName }}
+      volumeName: {{ $volume.volumeName }}
+      {{- end }}
+      {{- if $volume.dataSource }}
+      dataSource:
+{{ toYaml $volume.dataSource | indent 8 }}
+      {{- end }}
       accessModes:
-        - ReadWriteOnce
+      {{- if $volume.accessModes }}
+{{ toYaml $volume.accessModes | indent 8 }}
+      {{- else }}
+      - ReadWriteOnce
+      {{- end }}
       resources:
         requests:
           storage: {{ $volume.size | quote }}

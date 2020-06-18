@@ -7,6 +7,10 @@ deployments:
     values:
       containers:
       - image: nginx
+        volumeMounts:
+        - containerPath: /test
+          volume:
+            name: test-data
       service:
         ports:
         - port: 80
@@ -14,3 +18,6 @@ deployments:
         tls: true
         rules:
         - host: ${DEVSPACE_SPACE_DOMAIN1}
+      volumes:
+      - name: test-data
+        size: "2Gi"
