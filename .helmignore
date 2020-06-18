@@ -1,4 +1,7 @@
-tests/
+.git/
+.github/
 docs/
+tests/
+
 *.md
 LICENSE

@@ -1,0 +1,16 @@
+containers:
+- image: nginx
+  volumeMounts:
+  - containerPath: /test
+    volume:
+      name: test-data
+service:
+  ports:
+  - port: 80
+ingress:
+  tls: true
+  rules:
+  - host: some-hostname.tld
+volumes:
+- name: test-data
+  size: "2Gi"
