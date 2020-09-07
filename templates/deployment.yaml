@@ -126,6 +126,8 @@ spec:
 {{ toYaml $container.livenessProbe | indent 12 }}
           readinessProbe:
 {{ toYaml $container.readinessProbe | indent 12 }}
+          startupProbe:
+{{ toYaml $container.startupProbe | indent 12 }}
           volumeMounts:
             {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
             - mountPath: {{ $volumeMount.containerPath | quote }}
