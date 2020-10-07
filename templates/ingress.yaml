@@ -64,6 +64,13 @@ metadata:
     {{- end }}
     {{- end }}
 spec:
+  {{- if $.Values.ingress.defaultBackend }}
+  defaultBackend:
+{{ toYaml $.Values.ingress.defaultBackend | indent 4 }}
+  {{- end }}
+  {{- if $.Values.ingress.ingressClassName }}
+  ingressClassName: {{ $.Values.ingress.ingressClassName }}
+  {{- end }}
   rules:
   {{- range $ingressRuleIndex, $ingressRule := $.Values.ingress.rules }}
   - host: {{ $ingressRule.host | quote }}
