@@ -302,7 +302,7 @@ spec:
           {{- if $container.name }}
           name: {{ $container.name | quote }}
           {{- else }}
-          name: "container-{{ $containerIndex }}"
+          name: "init-container-{{ $containerIndex }}"
           {{- end }}
           {{- if $container.imagePullPolicy }}
           imagePullPolicy: {{ $container.imagePullPolicy }}
