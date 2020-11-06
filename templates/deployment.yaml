@@ -302,10 +302,19 @@ spec:
           {{- if $container.name }}
           name: {{ $container.name | quote }}
           {{- else }}
-          name: "init-container-{{ $containerIndex }}"
+          name: "container-{{ $containerIndex }}"
+          {{- end }}
+          {{- if $container.imagePullPolicy }}
+          imagePullPolicy: {{ $container.imagePullPolicy }}
+          {{- end }}
+          {{- if $container.workingDir }}
+          workingDir: {{ $container.workingDir }}
           {{- end }}
           {{- if $container.stdin }}
           stdin: {{ $container.stdin }}
+          {{- end }}
+          {{- if $container.stdinOnce }}
+          stdinOnce: {{ $container.stdinOnce }}
           {{- end }}
           {{- if $container.tty }}
           tty: {{ $container.tty }}
@@ -318,12 +327,28 @@ spec:
             {{- range $argIndex, $arg := $container.args }}
             - {{ $arg | quote }}
             {{- end }}
+          {{- if $container.terminationMessagePath }}
+          terminationMessagePath: {{ $container.terminationMessagePath }}
+          {{- end }}
+          {{- if $container.terminationMessagePolicy }}
+          terminationMessagePolicy: {{ $container.terminationMessagePolicy }}
+          {{- end }}
           env:
 {{ toYaml $container.env | indent 12 }}
+          envFrom:
+{{ toYaml $container.envFrom | indent 12 }}
+          securityContext:
+{{ toYaml $container.securityContext | indent 12 }}
+          lifecycle:
+{{ toYaml $container.lifecycle | indent 12 }}
           livenessProbe:
 {{ toYaml $container.livenessProbe | indent 12 }}
           readinessProbe:
 {{ toYaml $container.readinessProbe | indent 12 }}
+          startupProbe:
+{{ toYaml $container.startupProbe | indent 12 }}
+          volumeDevices:
+{{ toYaml $container.volumeDevices | indent 12 }}
           volumeMounts:
             {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
             - mountPath: {{ $volumeMount.containerPath | quote }}
