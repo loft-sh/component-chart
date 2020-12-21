@@ -101,7 +101,7 @@ spec:
   tls:
   - hosts:
     {{- range $ingressRuleIndex, $ingressRule := $.Values.ingress.rules }}
-    - {{ $ingressRule.host }}
+    - {{ $ingressRule.host | quote }}
     {{- end }}
     secretName: {{ $tlsSecretName | quote }}
   {{- end }}
