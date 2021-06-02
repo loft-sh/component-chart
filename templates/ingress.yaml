@@ -97,8 +97,8 @@ spec:
   defaultBackend:
 {{ toYaml $.Values.ingress.defaultBackend | indent 4 }}
   {{- end }}
-  {{- if $.Values.ingress.ingressClassName }}
-  ingressClassName: {{ $.Values.ingress.ingressClassName }}
+  {{- if $.Values.ingress.ingressClass }}
+  ingressClassName: {{ $.Values.ingress.ingressClass }}
   {{- end }}
   rules:
   {{- range $ingressRuleIndex, $ingressRule := $.Values.ingress.rules }}
