@@ -42,10 +42,28 @@ metadata:
     {{- end }}
   annotations:
     "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    {{- $addIssuer := true }}
+    {{- $addIssuerGroup := true }}
+    {{- $addIssuerKind := true }}
     {{- $addClusterIssuer := true }}
     {{- $addIngressClass := true }}
     {{- range $annotationName, $annotationValue := $.Values.ingress.annotations }}
-    {{- if or (eq $annotationName "cert-manager.io/cluster-issuer") (eq $annotationName "certmanager.k8s.io/cluster-issuer") (eq $annotationName "cert-manager.io/issuer") (eq $annotationName "certmanager.k8s.io/issuer") }}
+    {{- if or (eq $annotationName "cert-manager.io/issuer") (eq $annotationName "certmanager.k8s.io/issuer") }}
+      {{- $addIssuer = false }}
+      {{- $addClusterIssuer = false }}
+    {{- end }}
+    {{- if or (eq $annotationName "cert-manager.io/issuer-group") (eq $annotationName "certmanager.k8s.io/issuer-group") }}
+      {{- $addIssuerGroup = false }}
+      {{- $addClusterIssuer = false }}
+    {{- end }}
+    {{- if or (eq $annotationName "cert-manager.io/issuer-kind") (eq $annotationName "certmanager.k8s.io/issuer-kind") }}
+      {{- $addIssuerKind = false }}
+      {{- $addClusterIssuer = false }}
+    {{- end }}
+    {{- if or (eq $annotationName "cert-manager.io/cluster-issuer") (eq $annotationName "certmanager.k8s.io/cluster-issuer") }}
+      {{- $addIssuer = false }}
+      {{- $addIssuerGroup = false }}
+      {{- $addIssuerKind = false }}
       {{- $addClusterIssuer = false }}
     {{- end }}
     {{- if or (eq $annotationName "acme.cert-manager.io/http01-ingress-class") (eq $annotationName "certmanager.k8s.io/http01-ingress-class") }}
@@ -54,7 +72,18 @@ metadata:
     {{ $annotationName | quote }}: {{ $annotationValue | quote }}
     {{- end }}
     {{- if ne (printf "%s" $tlsSecretName) "" }}
-    {{- if $addClusterIssuer }}
+    {{- if and $addIssuer $.Values.ingress.tlsIssuer }}
+    cert-manager.io/issuer: {{ $.Values.ingress.tlsIssuer | quote }}
+    certmanager.k8s.io/issuer: {{ $.Values.ingress.tlsIssuer | quote }}
+    {{- if and $addIssuerGroup $.Values.ingress.tlsIssuerGroup }}
+    cert-manager.io/issuer-group: {{ $.Values.ingress.tlsIssuerGroup | quote }}
+    certmanager.k8s.io/issuer-group: {{ $.Values.ingress.tlsIssuerGroup | quote }}
+    {{- end }}
+    {{- if and $addIssuerKind $.Values.ingress.tlsIssuerKind }}
+    cert-manager.io/issuer-kind: {{ $.Values.ingress.tlsIssuerKind | quote }}
+    certmanager.k8s.io/issuer-kind: {{ $.Values.ingress.tlsIssuerKind | quote }}
+    {{- end }}
+    {{- else if $addClusterIssuer }}
     cert-manager.io/cluster-issuer: {{ $.Values.ingress.tlsClusterIssuer | default "lets-encrypt-http-issuer" | quote }}
     certmanager.k8s.io/cluster-issuer: {{ $.Values.ingress.tlsClusterIssuer | default "lets-encrypt-http-issuer" | quote }}
     {{- end }}

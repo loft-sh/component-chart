@@ -129,6 +129,36 @@ ingress:
   - host: my-static-host2.tld
 ```
 
+
+## `tlsIssuer`
+The `tlsIssuer` option expects a string with the name of the issuer for cert-manager.
+
+#### Example: Custom Issuer
+```yaml
+containers:
+- image: dscr.io/${DEVSPACE_USERNAME}/appfrontend
+service:
+  ports:
+  - port: 3000
+ingress:
+  tls: true
+  tlsIssuer: step-issuer
+  tlsIssuerGroup: certmanager.step.sm
+  tlsIssuerKind: StepIssuer
+  rules:
+  - host: my-static-host.tld
+  - host: my-static-host2.tld
+```
+
+
+## `tlsIssuerGroup`
+The `tlsIssuerGroup` option expects a string with the name of the issuer group for cert-manager.
+
+
+## `tlsIssuerKind`
+The `tlsIssuerKind` option expects a string with the name of the issuer kind for cert-manager.
+
+
 ## `tlsClusterIssuer`
 The `tlsClusterIssuer` option expects a string with the name of the cluster issuer for cert-manager.
 
@@ -151,6 +181,7 @@ ingress:
   - host: my-static-host.tld
   - host: my-static-host2.tld
 ```
+
 
 ## `ingressClass`
 The `ingressClass` option expects a string with a Kubernetes ingress class used for a cert-manager annotation.
