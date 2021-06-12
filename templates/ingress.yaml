@@ -18,7 +18,13 @@
   {{- end }}
 {{- end }}
 {{- end }}
+{{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
 apiVersion: extensions/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   {{- if $.Values.ingress.name }}
@@ -73,29 +79,46 @@ spec:
   {{- end }}
   rules:
   {{- range $ingressRuleIndex, $ingressRule := $.Values.ingress.rules }}
+
+  {{- $svcPort := 0 }}
+  {{- if $ingressRule.servicePort }}
+  {{- $svcPort = $ingressRule.servicePort -}}
+  {{- else }}
+  {{- $svcPort = (index $.Values.service.ports 0).port -}}
+  {{- end }}
+
+  {{- $svcName := "" }}
+  {{- if $ingressRule.serviceName }}
+  {{- $svcName = $ingressRule.serviceName -}}
+  {{- else }}
+  {{- if $.Values.service.name }}
+  {{- $svcName = $.Values.service.name -}}
+  {{- else }}
+  {{- $svcName = $.Release.Name -}}
+  {{- end }}
+  {{- end }}
   - host: {{ $ingressRule.host | quote }}
     http:
       paths:
       - backend:
-          {{- if $ingressRule.serviceName }}
-          serviceName: {{ $ingressRule.serviceName | quote }}
-          {{- else }}
-          {{- if $.Values.service.name }}
-          serviceName: {{ $.Values.service.name | quote }}
-          {{- else }}
-          serviceName: {{ $.Release.Name | quote }}
-          {{- end }}
-          {{- end }}
-          {{- if $ingressRule.servicePort }}
-          servicePort: {{ $ingressRule.servicePort }}
-          {{- else }}
-          servicePort: {{ (index $.Values.service.ports 0).port }}
-          {{- end }}
+        {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+          service:
+            name: {{ $svcName | quote }}
+            port:
+              number: {{ $svcPort }}
+        {{- else}}
+          serviceName: {{ $svcName }}
+          servicePort: {{ $svcPort }}
+        {{- end }}
         {{- if $ingressRule.path }}
         path: {{ $ingressRule.path | quote }}
         {{- else }}
         path: /
         {{- end }}
+        {{- if and $ingressRule.pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+        pathType: {{ $ingressRule.pathType | quote }}
+        {{- end }}
+        
   {{- end }}
   {{- if ne (printf "%s" $tlsSecretName) "" }}
   tls:
