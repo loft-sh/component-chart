@@ -6,11 +6,11 @@ sidebar_label: containers
 Components are deployed as Kubernetes Deployment or StatefulSet (if one of the containers mounts a value). These Kubernetes resources create a certain number of pods which are a set of containers. These containers are created based on images. 
 
 ## `name`
-The `name` option is optional and expects a string with the name for the Deployment or StatefulSet.
+The `name` option is optional and expects a string with the name for the Container.
 
 #### Default Value for `name`
 ```yaml
-name: [HELM_RELEASE_NAME]
+name: container-[index]
 ```
 
 ## `image`
