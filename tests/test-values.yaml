@@ -11,6 +11,7 @@ ingress:
   tls: true
   rules:
   - host: some-hostname.tld
+    pathType: Prefix
 volumes:
 - name: test-data
   size: "2Gi"

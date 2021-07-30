@@ -18,9 +18,9 @@
   {{- end }}
 {{- end }}
 {{- end }}
-{{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion -}}
+{{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress"}}
 apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion -}}
+{{- else if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
 apiVersion: extensions/v1beta1
@@ -101,12 +101,12 @@ spec:
     http:
       paths:
       - backend:
-        {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+        {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress"}}
           service:
             name: {{ $svcName | quote }}
             port:
               number: {{ $svcPort }}
-        {{- else}}
+        {{- else }}
           serviceName: {{ $svcName }}
           servicePort: {{ $svcPort }}
         {{- end }}
