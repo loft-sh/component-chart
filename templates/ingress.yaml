@@ -115,8 +115,12 @@ spec:
         {{- else }}
         path: /
         {{- end }}
-        {{- if and $ingressRule.pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+        {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.Version }}
+        {{- if $ingressRule.pathType }}
         pathType: {{ $ingressRule.pathType | quote }}
+        {{- else }}
+        pathType: ImplementationSpecific
+        {{- end }}
         {{- end }}
         
   {{- end }}
