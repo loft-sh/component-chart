@@ -109,16 +109,16 @@ spec:
 {{ toYaml $.Values.securityContext | indent 8 }}
       topologySpreadConstraints:
 {{ toYaml $.Values.topologySpreadConstraints | indent 8 }}
-      {{- if $.Values.activeDeadlineSeconds }}
+      {{- if hasKey $.Values "activeDeadlineSeconds" }}
       activeDeadlineSeconds: {{ $.Values.activeDeadlineSeconds }}
       {{- end }}
-      {{- if $.Values.automountServiceAccountToken }}
+      {{- if hasKey $.Values "automountServiceAccountToken" }}
       automountServiceAccountToken: {{ $.Values.automountServiceAccountToken }}
       {{- end }}
       {{- if $.Values.dnsPolicy }}
       dnsPolicy: {{ $.Values.dnsPolicy }}
       {{- end }}
-      {{- if $.Values.enableServiceLinks }}
+      {{- if hasKey $.Values "enableServiceLinks" }}
       enableServiceLinks: {{ $.Values.enableServiceLinks }}
       {{- end }}
       {{- if $.Values.hostIPC }}
@@ -166,7 +166,7 @@ spec:
       {{- if $.Values.subdomain }}
       subdomain: {{ $.Values.subdomain }}
       {{- end }}
-      {{- if $.Values.terminationGracePeriodSeconds }}
+      {{- if hasKey $.Values "terminationGracePeriodSeconds" }}
       terminationGracePeriodSeconds: {{ $.Values.terminationGracePeriodSeconds }}
       {{- else }}
       terminationGracePeriodSeconds: 5
@@ -187,13 +187,13 @@ spec:
           {{- if $container.workingDir }}
           workingDir: {{ $container.workingDir }}
           {{- end }}
-          {{- if $container.stdin }}
+          {{- if hasKey $container "stdin" }}
           stdin: {{ $container.stdin }}
           {{- end }}
-          {{- if $container.stdinOnce }}
+          {{- if hasKey $container "stdinOnce" }}
           stdinOnce: {{ $container.stdinOnce }}
           {{- end }}
-          {{- if $container.tty }}
+          {{- if hasKey $container "tty" }}
           tty: {{ $container.tty }}
           {{- end }}
           command:
@@ -310,13 +310,13 @@ spec:
           {{- if $container.workingDir }}
           workingDir: {{ $container.workingDir }}
           {{- end }}
-          {{- if $container.stdin }}
+          {{- if hasKey $container "stdin" }}
           stdin: {{ $container.stdin }}
           {{- end }}
-          {{- if $container.stdinOnce }}
+          {{- if hasKey $container "stdinOnce" }}
           stdinOnce: {{ $container.stdinOnce }}
           {{- end }}
-          {{- if $container.tty }}
+          {{- if hasKey $container "tty" }}
           tty: {{ $container.tty }}
           {{- end }}
           command:
