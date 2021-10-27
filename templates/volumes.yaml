@@ -1,5 +1,5 @@
 {{- range $volumeIndex, $volume := .Values.volumes }}
-{{- if or $volume.secret $volume.configMap }}
+{{- if or $volume.secret $volume.configMap (hasKey $volume "emptyDir") }}
 {{- else }}
 {{- $createVolume := false }}
 {{- range $containerIndex, $container := $.Values.containers }}
