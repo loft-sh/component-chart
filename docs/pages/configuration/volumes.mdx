@@ -15,6 +15,10 @@ The `name` option is mandatory and expects a string with the name of this volume
 The `size` option is used for persistent volumes and expects a string with the size of the persistent volume that should be provisioned.
 
 
+## `emptyDir`
+The `emptyDir` option is used for defining a Kubernetes `emptyDir` volume. `{}` will enable an `emptyDir` with default values. `emptyDir.medium` can optionally be `Memory`. `emptyDir.sizeLimit` can be use to specify the size limit.
+
+
 ## `configMap`
 The `configMap` option is used for defining a Kubernetes ConfigMap as volume. It requires defining `configMap.name`.
 

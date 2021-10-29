@@ -46,8 +46,30 @@ volumes:
 
 </details>
 
+### `emptyDir` Volumes
+Using DevSpace components, you can define temporary volumes to share files between containers of a Pod according to [Kubernetes EmptyDirVolumeSource specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#emptydirvolumesource-v1-core)
+```yaml
+volumes:
+- name: temp-storage
+  emptyDir: {}
+```
+
+<details>
+<summary>Show specification for emptyDir Volumes</summary>
+
+```yaml
+volumes:
+- name: [a-z0-9-]{1,253}                     # Name of the volume (used to mount the volume)
+  emptyDir:                                  # Kubernetes EmptyDirVolumeSource v1
+    medium: "" | Memory                      # Default "". The storage medium type
+    sizeLimit: nil | [number] + Gi|Mi|Ki     # Default nil. Size of the volume in Gigabyte, Megabyte or Kilobyte
+    ...
+```
+
+</details>
+
 ### ConfigMap Volumes
-Using DevSpace components, you can define Kubernetes ConfigMaps as volumes according to the [Kubernetes ConfigMapVolumeSource specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#configmapvolumesource-v1-core):
+Using DevSpace components, you can define Kubernetes ConfigMaps as volumes according to the [Kubernetes ConfigMapVolumeSource specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#configmapvolumesource-v1-core):
 ```yaml
 volumes:
 - name: nginx-config
@@ -69,7 +91,7 @@ volumes:
 </details>
 
 ### Secret Volumes
-Using DevSpace components, you can define Kubernetes Secrets as volumes according to the [Kubernetes SecretVolumeSource specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#secretvolumesource-v1-core):
+Using DevSpace components, you can define Kubernetes Secrets as volumes according to the [Kubernetes SecretVolumeSource specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.22/#secretvolumesource-v1-core):
 ```yaml
 volumes:
 - name: secret-token

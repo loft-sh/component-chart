@@ -7,8 +7,10 @@ apiVersion: apps/v1
     {{- if $volumeMount.volume.readOnly }}
     {{- else }}
       {{- range $volumeIndex, $volume := $.Values.volumes }}
+        {{- if not (or (hasKey $volume "secret") (hasKey $volume "configMap") (hasKey $volume "emptyDir") ) }}
         {{- if eq $volumeMount.volume.name $volume.name }}
           {{- $kind = "StatefulSet" }}
+        {{- end }}
         {{- end }}
       {{- end }}
     {{- end }}
@@ -424,7 +426,7 @@ spec:
         {{- $isVolumeOfThisComponent := false }}
         {{- range $containerIndex, $container := $.Values.containers }}
           {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
-            {{- if or $volumeMount.volume.readOnly $volumeMount.volume.shared $volume.secret $volume.configMap }}
+            {{- if or $volumeMount.volume.readOnly $volumeMount.volume.shared $volume.secret $volume.configMap (hasKey $volume "emptyDir") }}
               {{- if eq $volume.name $volumeMount.volume.name }}
                 {{- $isVolumeOfThisComponent = true }}
               {{- end }}
@@ -441,15 +443,20 @@ spec:
           configMap:
 {{ toYaml $volume.configMap | indent 12 }}
           {{- else }}
+          {{- if hasKey $volume "emptyDir" }}
+          emptyDir:
+{{ toYaml $volume.emptyDir | indent 12 }}
+          {{- else }}
           persistentVolumeClaim:
             claimName: {{ $volume.name | quote }}
+          {{- end }}
           {{- end }}
           {{- end }}
         {{- end }}
         {{- end }}
   volumeClaimTemplates:
     {{- range $volumeIndex, $volume := $.Values.volumes }}
-    {{- if or $volume.secret $volume.configMap }}
+    {{- if or $volume.secret $volume.configMap (hasKey $volume "emptyDir") }}
     {{- else }}
     {{- $isVolumeTemplateOfThisComponent := false }}
     {{- range $containerIndex, $container := $.Values.containers }}
