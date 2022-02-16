@@ -20,7 +20,7 @@ ingress:
 ```
 
 :::warning
-Using `tls: true` requires that your Kubernetes cluster has cert-manager installed.
+Using `tls: true` requires that your Kubernetes cluster has cert-manager installed. If do not want to use cert-manager, you can (instead of using `true` as a value) provide the name of a secret continaing your TLS certificate instead, e.g. `tls: my-tls-secret`.
 :::
 
 ## Check Certificate Status
