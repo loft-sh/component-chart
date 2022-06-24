@@ -244,6 +244,9 @@ spec:
               {{- if .cpu }}
               cpu: {{ .cpu | quote }}
               {{- end }}
+              {{- if .gpu }}
+              nvidia.com/gpu: {{ .gpu | quote }}
+              {{- end }}
               {{- if .memory }}
               memory: {{ .memory | quote }}
               {{- end }}
