@@ -62,6 +62,7 @@ spec:
       name: memory
       targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeMemory | int }}
   {{- end }}
+
 ---
 {{- end }}
 {{- end }}
