@@ -48,7 +48,7 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeCPU }}
+      targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeCPU | int }}
   {{- end }}
   {{- if $.Values.autoScaling.horizontal.averageMemory }}
   - type: Resource
@@ -60,7 +60,7 @@ spec:
   - type: Resource
     resource:
       name: memory
-      targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeMemory | quote }}
+      targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeMemory | int }}
   {{- end }}
 ---
 {{- end }}
