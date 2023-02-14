@@ -66,6 +66,7 @@ serviceName: my-service     # string    | Name of headless service (for Kubernet
 ## `ingress`
 ```yaml
 ingress:                    # struct    | Ingress for component
+  disabled: false           # boolean   | Allows specifying ingress rules, but disabling them in certain contexts
   rules:                    # struct[]  | Array of ingress rules for component
   - host: my-hostname.tld   # string    | Hostname for ingress rule
     path: /                 # string    | Host path for ingress rule (default: /)
