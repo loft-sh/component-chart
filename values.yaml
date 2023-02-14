@@ -17,6 +17,7 @@ labels: {}
 annotations: {}
 
 ingress:
+  disabled: false
   labels: {}
   annotations: {}
   rules: []

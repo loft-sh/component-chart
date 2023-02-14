@@ -10,6 +10,9 @@ import FragmentIngressExample from '@site/pages/fragments/ingress-example.mdx';
 ## `rules`
 The `rules` option expects an array of ingress rules that define how the incoming external traffic is routed by the ingress.
 
+## `disabled`
+The `disabled` option can be set to `true` to disable the ingress without removing the rules definitions.
+In devspace it can be configured by a environmental variable or flag.
 
 ### `host`
 The `host` option expects a string stating the hostname (domain name) that the component should be made available on.
