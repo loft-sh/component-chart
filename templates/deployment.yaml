@@ -39,8 +39,8 @@ spec:
     {{- if $.Values.rollingUpdate.enabled }}
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{ $.Values.rollingUpdate.maxSurge | default "25%" | quote }}
-      maxUnavailable: {{ $.Values.rollingUpdate.maxUnavailable | default "0%" | quote }}
+      maxSurge: {{ $.Values.rollingUpdate.maxSurge | default "25%" }}
+      maxUnavailable: {{ $.Values.rollingUpdate.maxUnavailable | default "0%" }}
     {{- else }}
     type: Recreate
     {{- end }}
