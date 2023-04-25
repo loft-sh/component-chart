@@ -40,7 +40,7 @@ containerPort: [same as `port` option]
 ```
 
 ### `name`
-The `name` option is optional and allows you to customize the name of the port. 
+The `name` option is optional and allows you to customize the name of the port.
 
 #### Default for `name`
 By default the port name will be "port-0", "port-1" etc.
@@ -48,6 +48,11 @@ By default the port name will be "port-0", "port-1" etc.
 ```yaml
 name: port-0
 ```
+
+### `nodePort`
+The `nodePort` option is optional and tells the service to expose the service at a static node port.
+Applicable to `NodePort` service `type`.
+
 
 ### `protocol`
 The `protocol` option is optional and expects a string that defines the network protocol for this service port.
@@ -86,4 +91,3 @@ The `labels` option is optional and expects an array of additional Kubernetes la
 
 ## `annotations`
 The `annotations` option is optional and expects an array of additional Kubernetes annotations for the service.
-
