@@ -7,7 +7,7 @@ apiVersion: apps/v1
     {{- if $volumeMount.volume.readOnly }}
     {{- else }}
       {{- range $volumeIndex, $volume := $.Values.volumes }}
-        {{- if not (or (hasKey $volume "secret") (hasKey $volume "configMap") (hasKey $volume "emptyDir") ) }}
+        {{- if not (or (hasKey $volume "secret") (hasKey $volume "configMap") (hasKey $volume "emptyDir") (hasKey $volume "hostPath") ) }}
         {{- if eq $volumeMount.volume.name $volume.name }}
           {{- $kind = "StatefulSet" }}
         {{- end }}
@@ -426,7 +426,7 @@ spec:
         {{- $isVolumeOfThisComponent := false }}
         {{- range $containerIndex, $container := $.Values.containers }}
           {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
-            {{- if or $volumeMount.volume.readOnly $volumeMount.volume.shared $volume.secret $volume.configMap (hasKey $volume "emptyDir") }}
+            {{- if or $volumeMount.volume.readOnly $volumeMount.volume.shared $volume.secret $volume.configMap (hasKey $volume "emptyDir") (hasKey $volume "hostPath") }}
               {{- if eq $volume.name $volumeMount.volume.name }}
                 {{- $isVolumeOfThisComponent = true }}
               {{- end }}
@@ -447,8 +447,13 @@ spec:
           emptyDir:
 {{ toYaml $volume.emptyDir | indent 12 }}
           {{- else }}
+          {{- if hasKey $volume "hostPath" }}
+          hostPath:
+{{ toYaml $volume.hostPath | indent 12 }}
+          {{- else }}
           persistentVolumeClaim:
             claimName: {{ $volume.name | quote }}
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- end }}
@@ -456,7 +461,7 @@ spec:
         {{- end }}
   volumeClaimTemplates:
     {{- range $volumeIndex, $volume := $.Values.volumes }}
-    {{- if or $volume.secret $volume.configMap (hasKey $volume "emptyDir") }}
+    {{- if or $volume.secret $volume.configMap (hasKey $volume "emptyDir") (hasKey $volume "hostPath") }}
     {{- else }}
     {{- $isVolumeTemplateOfThisComponent := false }}
     {{- range $containerIndex, $container := $.Values.containers }}

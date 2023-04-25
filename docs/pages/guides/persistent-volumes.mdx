@@ -113,6 +113,32 @@ volumes:
 </details>
 
 
+### HostPath Volumes
+Using DevSpace components, you can define your Node's filesystem as volumes according to the [Kubernetes HostPath specification](https://kubernetes.io/docs/concepts/storage/volumes/#hostpath):
+```yaml
+volumes:
+- name: docker-sock
+  hostPath:
+    path: "/var/run/docker.sock"
+    type: Socket
+```
+
+The above example will mount your local Docker socket to a socket inside the container, which allows for Docker In Docker (DIND) 
+
+
+<details>
+<summary>Show specification for HostPath volumes</summary>
+
+```yaml
+volumes:
+- name: [a-z0-9-]{1,253}            # Name of the volume (used to mount the volume)
+  hostPath:                         # Kubernetes HostPathVolumeSource v1
+    path: [a-z0-9-]{1,253}          # File or Directory on the node's filesystem
+    ...
+```
+
+</details>
+
 ## Mount Volumes
 After defining a volume for a component, you can mount it in the containers of the same component within the `volumeMounts` section:
 ```yaml
