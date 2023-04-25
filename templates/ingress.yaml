@@ -19,13 +19,7 @@
   {{- end }}
 {{- end }}
 {{- end }}
-{{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress"}}
 apiVersion: networking.k8s.io/v1
-{{- else if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" }}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
   {{- if $.Values.ingress.name }}
@@ -102,26 +96,19 @@ spec:
     http:
       paths:
       - backend:
-        {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress"}}
           service:
             name: {{ $svcName | quote }}
             port:
               number: {{ $svcPort }}
-        {{- else }}
-          serviceName: {{ $svcName }}
-          servicePort: {{ $svcPort }}
-        {{- end }}
         {{- if $ingressRule.path }}
         path: {{ $ingressRule.path | quote }}
         {{- else }}
         path: /
         {{- end }}
-        {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.Version }}
         {{- if $ingressRule.pathType }}
         pathType: {{ $ingressRule.pathType | quote }}
         {{- else }}
         pathType: ImplementationSpecific
-        {{- end }}
         {{- end }}
         
   {{- end }}
