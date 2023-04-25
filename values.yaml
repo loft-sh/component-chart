@@ -20,6 +20,7 @@ ingress:
   disabled: false
   labels: {}
   annotations: {}
+  certmanager: true
   rules: []
 
 # Define persistent volumes here
