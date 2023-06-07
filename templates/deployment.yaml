@@ -216,6 +216,18 @@ spec:
 {{ toYaml $container.env | indent 12 }}
           envFrom:
 {{ toYaml $container.envFrom | indent 12 }}
+          {{- if $container.ports }}
+          ports:
+          {{- range $portMapIndex, $portMap := $container.ports }}
+            {{- if $portMap.name }}
+            - name: {{ $portMap.name }}
+            {{- else }}
+            - name: "port-{{ $portMapIndex }}"
+            {{- end }}
+            {{- $_ := unset $portMap "name" }}
+{{ toYaml $portMap | indent 14 }}
+          {{- end }}
+          {{- end }}
           securityContext:
 {{ toYaml $container.securityContext | indent 12 }}
           lifecycle:
