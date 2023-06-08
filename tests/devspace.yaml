@@ -1,4 +1,7 @@
-version: v1beta6
+version: v1beta11
+vars:
+  - name: DEVSPACE_SPACE_DOMAIN1
+    value: devspace.example.com
 deployments:
 - name: component-chart-test
   helm:
@@ -11,6 +14,12 @@ deployments:
         - containerPath: /test
           volume:
             name: test-data
+      - image: nginx
+        ports:
+          - name: custom
+            protocol: TCP
+            containerPort: 80
+          - containerPort: 8080
       service:
         ports:
         - port: 80
