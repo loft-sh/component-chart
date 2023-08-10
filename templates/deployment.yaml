@@ -16,6 +16,13 @@ apiVersion: apps/v1
     {{- end }}
   {{- end }}
 {{- end }}
+{{- $allContainers := list }}
+{{- range $idx, $container := $.Values.containers }}
+  {{- $allContainers = append $allContainers $container }}
+{{- end }}
+{{- range $idx, $initContainer := $.Values.initContainers }}
+  {{- $allContainers = append $allContainers $initContainer }}
+{{- end }}
 kind: {{ $kind }}
 metadata:
   name: {{ $.Release.Name | quote }}
@@ -439,7 +446,7 @@ spec:
       volumes:
         {{- range $volumeIndex, $volume := $.Values.volumes }}
         {{- $isVolumeOfThisComponent := false }}
-        {{- range $containerIndex, $container := $.Values.containers }}
+        {{- range $containerIndex, $container := $allContainers }}
           {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
             {{- if or $volumeMount.volume.readOnly $volumeMount.volume.shared $volume.secret $volume.configMap (hasKey $volume "emptyDir") (hasKey $volume "hostPath") }}
               {{- if eq $volume.name $volumeMount.volume.name }}
@@ -479,7 +486,7 @@ spec:
     {{- if or $volume.secret $volume.configMap (hasKey $volume "emptyDir") (hasKey $volume "hostPath") }}
     {{- else }}
     {{- $isVolumeTemplateOfThisComponent := false }}
-    {{- range $containerIndex, $container := $.Values.containers }}
+    {{- range $containerIndex, $container := $allContainers }}
       {{- range $volumeMountIndex, $volumeMount := $container.volumeMounts }}
         {{- if or $volumeMount.volume.readOnly $volumeMount.volume.shared }}
         {{- else }}
