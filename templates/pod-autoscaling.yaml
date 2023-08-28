@@ -14,7 +14,7 @@
     {{- end }}
   {{- end }}
 {{- end }}
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ $.Release.Name | quote }}
@@ -42,25 +42,33 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageValue: {{ $.Values.autoScaling.horizontal.averageCPU }}
+      target:
+        type: AverageValue
+        averageValue: {{ $.Values.autoScaling.horizontal.averageCPU }}
   {{- end }}
   {{- if $.Values.autoScaling.horizontal.averageRelativeCPU }}
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeCPU | int }}
+      target:
+        type: Utilization
+        averageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeCPU | int }}
   {{- end }}
   {{- if $.Values.autoScaling.horizontal.averageMemory }}
   - type: Resource
     resource:
       name: memory
-      targetAverageValue: {{ $.Values.autoScaling.horizontal.averageMemory | quote }}
+      target:
+        type: AverageValue
+        averageValue: {{ $.Values.autoScaling.horizontal.averageMemory | quote }}
   {{- end }}
   {{- if $.Values.autoScaling.horizontal.averageRelativeMemory }}
   - type: Resource
     resource:
       name: memory
-      targetAverageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeMemory | int }}
+      target:
+        type: Utilization
+        averageUtilization: {{ $.Values.autoScaling.horizontal.averageRelativeMemory | int }}
   {{- end }}
 
 ---
