@@ -37,7 +37,7 @@ spec:
   healthCheckNodePort: {{ $.Values.service.healthCheckNodePort }}
   {{- end }}
   {{- if $.Values.service.ipFamily }}
-  ipFamily: {{ $.Values.service.ipFamily }}
+  ipFamilyPolicy: {{ $.Values.service.ipFamily }}
   {{- end }}
   {{- if $.Values.service.loadBalancerIP }}
   loadBalancerIP: {{ $.Values.service.loadBalancerIP }}
