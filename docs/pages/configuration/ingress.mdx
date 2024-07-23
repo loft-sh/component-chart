@@ -176,12 +176,12 @@ ingress:
   - host: my-static-host2.tld
 ```
 
-## `ingressClass`
-The `ingressClass` option expects a string with a Kubernetes ingress class used for a cert-manager annotation.
+## `ingressClassName`
+The `ingressClassName` option expects a string with a Kubernetes ingress class used for a cert-manager annotation.
 
-#### Default Value For `ingressClass`
+#### Default Value For `ingressClassName`
 ```yaml
-ingressClass: nginx
+ingressClassName: ''
 ```
 
 #### Example: Custom Ingress Class
@@ -192,7 +192,7 @@ service:
   ports:
   - port: 3000
 ingress:
-  ingressClass: traefik
+  ingressClassName: traefik
   tls: true
   rules:
   - host: my-static-host.tld
