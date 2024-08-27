@@ -70,11 +70,11 @@ ingress:                    # struct    | Ingress for component
   rules:                    # struct[]  | Array of ingress rules for component
   - host: my-hostname.tld   # string    | Hostname for ingress rule
     path: /                 # string    | Host path for ingress rule (default: /)
-    servicePort: 
+    servicePort:
     serviceName:
   tls: true                 # boolean OR string | True (for auto-generated secert name) or name of secret with SSL certificate (default: false)
   tlsClusterIssuer: lets-encrypt-http-issuer # string   | Name of tls cluster issuer (letsencrypt, cert-manager)
-  ingressClass: nginx       # string    | Ingress class for certificate provisioning
+  ingressClassName: nginx   # string    | Ingress class for certificate provisioning
   name: my-ingress          # string    | Name of the ingress (optional, default: name of component release)
   labels:                   # map       | Map of additional labels (optional)
     labelName1: labelValue1
