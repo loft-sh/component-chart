@@ -4,6 +4,12 @@ sidebar_label: Usage
 ---
 
 ## Install Chart
+
+```bash
+helm repo add devspace https://charts.devspace.sh
+helm repo update
+```
+
 ```bash
 helm install -n my-namespace my-component component-chart --repo https://charts.loft.sh/
 ```
