@@ -1,0 +1,17 @@
+# Dependabot configuration to exclude docs folder from dependency updates
+# This prevents Dependabot from creating PRs for dependencies in the docs directory
+
+version: 2
+updates:
+  # Check for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    # Exclude the docs folder from Dependabot scanning
+    exclude-paths:
+      - "docs/**"
+    schedule:
+      interval: "weekly"
+    # Optional: Add labels to Dependabot PRs
+    labels:
+      - "dependencies"
+      - "automated"
