@@ -125,7 +125,7 @@ ingress:
     serviceName: my-custom-k8s-service
     servicePort: 8000
 ```
-**Explanation:**  
+**Explanation:**
 This example configuration would only create an ingress for a service called `my-custom-k8s-service` and forward the traffic from `my-static-host.tld` to port `8000` of this service.
 
 
@@ -176,12 +176,12 @@ ingress:
   - host: my-static-host2.tld
 ```
 
-## `ingressClass`
-The `ingressClass` option expects a string with a Kubernetes ingress class used for a cert-manager annotation.
+## `ingressClassName`
+The `ingressClassName` option expects a string with a Kubernetes ingress class used for a cert-manager annotation.
 
-#### Default Value For `ingressClass`
+#### Default Value For `ingressClassName`
 ```yaml
-ingressClass: nginx
+ingressClassName: nginx
 ```
 
 #### Example: Custom Ingress Class
@@ -192,7 +192,7 @@ service:
   ports:
   - port: 3000
 ingress:
-  ingressClass: traefik
+  ingressClassName: traefik
   tls: true
   rules:
   - host: my-static-host.tld
@@ -217,12 +217,12 @@ ingress:
   - host: my-static-host.tld
   - host: my-static-host2.tld
 ```
-**Explanation:**  
+**Explanation:**
 Instead of the default name `frontend`, the ingress of this component would be named `custom-ingress-name`.
 
 
 ## `labels`
-The `labels` option expects a map with Kubernetes labels. 
+The `labels` option expects a map with Kubernetes labels.
 
 By default, the component chart sets a couple of labels following the best practices described in the Kubernetes documentation:
 - `app.kubernetes.io/name: devspace-app`
@@ -258,7 +258,7 @@ ingress:
 
 
 ## `annotations`
-The `annotations` option expects a map with Kubernetes annotations. 
+The `annotations` option expects a map with Kubernetes annotations.
 
 By default, the component chart sets a couple of annotations following the best practices described in the Kubernetes documentation:
 - `helm.sh/chart: component-chart-vX.Y.Z`
@@ -290,4 +290,3 @@ ingress:
     annotation1: annotation-value-1
     annotation2: annotation-value-2
 ```
-

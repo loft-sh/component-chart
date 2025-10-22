@@ -61,8 +61,8 @@ metadata:
     certmanager.k8s.io/cluster-issuer: {{ $.Values.ingress.tlsClusterIssuer | default "lets-encrypt-http-issuer" | quote }}
     {{- end }}
     {{- if $addIngressClass }}
-    acme.cert-manager.io/http01-ingress-class: {{ $.Values.ingress.ingressClass | default "nginx" | quote }}
-    certmanager.k8s.io/http01-ingress-class: {{ $.Values.ingress.ingressClass | default "nginx" | quote }}
+    acme.cert-manager.io/http01-ingress-class: {{ $.Values.ingress.ingressClassName | default "nginx" | quote }}
+    certmanager.k8s.io/http01-ingress-class: {{ $.Values.ingress.ingressClassName | default "nginx" | quote }}
     {{- end }}
     {{- end }}
     {{- else }}
@@ -116,7 +116,7 @@ spec:
         {{- else }}
         pathType: ImplementationSpecific
         {{- end }}
-        
+
   {{- end }}
   {{- if ne (printf "%s" $tlsSecretName) "" }}
   tls:
@@ -131,4 +131,4 @@ spec:
 
 {{- end }}
 {{- end }}
-{{- end }} 
+{{- end }}
