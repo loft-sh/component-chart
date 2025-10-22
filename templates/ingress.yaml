@@ -43,31 +43,17 @@ metadata:
     {{- end }}
   annotations:
     "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
-    {{- if $.Values.ingress.certmanager }}
-    {{- $addClusterIssuer := true }}
-    {{- $addIngressClass := true }}
     {{- range $annotationName, $annotationValue := $.Values.ingress.annotations }}
-    {{- if or (eq $annotationName "cert-manager.io/cluster-issuer") (eq $annotationName "certmanager.k8s.io/cluster-issuer") (eq $annotationName "cert-manager.io/issuer") (eq $annotationName "certmanager.k8s.io/issuer") }}
-      {{- $addClusterIssuer = false }}
-    {{- end }}
-    {{- if or (eq $annotationName "acme.cert-manager.io/http01-ingress-class") (eq $annotationName "certmanager.k8s.io/http01-ingress-class") }}
-      {{- $addIngressClass = false }}
-    {{- end }}
     {{ $annotationName | quote }}: {{ $annotationValue | quote }}
     {{- end }}
+    {{- if and $.Values.ingress.certmanager $.Values.ingress.tls }}
     {{- if ne (printf "%s" $tlsSecretName) "" }}
-    {{- if $addClusterIssuer }}
-    cert-manager.io/cluster-issuer: {{ $.Values.ingress.tlsClusterIssuer | default "lets-encrypt-http-issuer" | quote }}
-    certmanager.k8s.io/cluster-issuer: {{ $.Values.ingress.tlsClusterIssuer | default "lets-encrypt-http-issuer" | quote }}
+    {{- if not (hasKey $.Values.ingress.annotations "cert-manager.io/cluster-issuer") }}
+    cert-manager.io/cluster-issuer: {{ $.Values.ingress.tlsClusterIssuer | default "cert-manager-letsencrypt" | quote }}
     {{- end }}
-    {{- if $addIngressClass }}
-    acme.cert-manager.io/http01-ingress-class: {{ $.Values.ingress.ingressClass | default "nginx" | quote }}
-    certmanager.k8s.io/http01-ingress-class: {{ $.Values.ingress.ingressClass | default "nginx" | quote }}
+    {{- if not (hasKey $.Values.ingress.annotations "acme.cert-manager.io/http01-edit-in-place") }}
+    acme.cert-manager.io/http01-edit-in-place: "true"
     {{- end }}
-    {{- end }}
-    {{- else }}
-    {{- range $annotationName, $annotationValue := $.Values.ingress.annotations }}
-    {{ $annotationName | quote }}: {{ $annotationValue | quote }}
     {{- end }}
     {{- end }}
 spec:

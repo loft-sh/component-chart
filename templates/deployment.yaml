@@ -40,6 +40,7 @@ metadata:
     {{- end }}
 spec:
   replicas: {{ $.Values.replicas | default 1 }}
+  revisionHistoryLimit: {{ $.Values.revisionHistoryLimit | default 3 }}
   {{- if eq $kind "Deployment" }}
   strategy:
     {{- if $.Values.rollingUpdate }}
@@ -160,9 +161,6 @@ spec:
       {{- if $.Values.schedulerName }}
       schedulerName: {{ $.Values.schedulerName }}
       {{- end }}
-      {{- if $.Values.serviceAccount }}
-      serviceAccount: {{ $.Values.serviceAccount }}
-      {{- end }}
       {{- if $.Values.serviceAccountName }}
       serviceAccountName: {{ $.Values.serviceAccountName }}
       {{- end }}
@@ -184,7 +182,7 @@ spec:
 {{ toYaml $.Values.ephemeralContainers | indent 8 }}
       containers:
         {{- range $containerIndex, $container := $.Values.containers }}
-        - image: {{ $container.image | quote }}
+        - image: "{{ $container.image }}:{{ $container.imageTag | default "latest" }}"
           {{- if $container.name }}
           name: {{ $container.name | quote }}
           {{- else }}

@@ -1,0 +1,31 @@
+{{- if .Values.configmap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configmap.name | default .Release.Name | quote }}
+  labels:
+    "app.kubernetes.io/name": {{ .Release.Name | quote }}
+    "app.kubernetes.io/managed-by": {{ .Release.Service | quote }}
+    {{- range $labelName, $labelValue := .Values.labels }}
+    {{ $labelName | quote }}: {{ $labelValue | quote }}
+    {{- end }}
+  annotations:
+    "helm.sh/chart": "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    {{- range $annotationName, $annotationValue := .Values.annotations }}
+    {{ $annotationName | quote }}: {{ $annotationValue | quote }}
+    {{- end }}
+    {{- range $annotationName, $annotationValue := .Values.configmap.annotations }}
+    {{ $annotationName | quote }}: {{ $annotationValue | quote }}
+    {{- end }}
+data:
+  {{- if .Values.configmap.data }}
+  {{- range $key, $value := .Values.configmap.data }}
+  {{- if kindIs "string" $value }}
+  {{ $key }}: {{ $value | quote }}
+  {{- else }}
+  {{ $key }}: {{ $value | toYaml | quote }}
+  {{- end }}
+  {{- end }}
+  {{- else }}
+  {{- end }}
+{{- end }}

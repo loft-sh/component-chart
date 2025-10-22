@@ -6,6 +6,8 @@
 containers: []
 initContainers: []
 
+configmap: {}
+
 service:
   type: ClusterIP
   labels: {}
