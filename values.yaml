@@ -31,3 +31,38 @@ volumes: []
 # DevSpace CLI will append all pull secrets which are automatically created
 # More infos on: https://devspace.cloud/docs/cli/image-building/workflow-basics#8-create-image-pull-secret
 pullSecrets: []
+
+virtualService:
+  disabled: true
+
+#   disabled: false
+#   name: "my-app-vs"
+#   gateways:
+#     - "my-gateway"
+#   labels:
+#     environment: "prod"
+#   annotations:
+#     owner: "team-x"
+#   rules:
+#     - host: "app.example.com"
+#       serviceName: "my-app"
+#       servicePort: 8080
+#       match:
+#         - prefix: "/"
+#       retries:
+#         attempts: 3
+#         perTryTimeout: 2s
+#         retryOn: "5xx"
+#       timeout: 10s
+#       corsPolicy:
+#         allowOrigins:
+#           - exact: "https://example.com"
+#         allowMethods:
+#           - GET
+#           - POST
+#         allowCredentials: true
+#     - host: "api.example.com"
+#       serviceName: "my-api"
+#       servicePort: 8081
+#       match:
+#         - prefix: "/api"

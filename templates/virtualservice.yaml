@@ -1,0 +1,114 @@
+{{- if not $.Values.virtualService.disabled }} #
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  {{- if $.Values.virtualService.name }}
+  name: {{ $.Values.virtualService.name | quote }}
+  {{- else if and $.Values.service (hasKey $.Values.service "name") $.Values.service.name }}
+  name: {{ $.Values.service.name | quote }}
+  {{- else }}
+  name: {{ $.Release.Name | quote }}
+  {{- end }}
+  labels:
+    "app.kubernetes.io/name": {{ $.Release.Name | quote }}
+    "app.kubernetes.io/managed-by": {{ $.Release.Service | quote }}
+    {{- range $labelName, $labelValue := $.Values.virtualService.labels }}
+    {{ $labelName | quote }}: {{ $labelValue | quote }}
+    {{- end }}
+  annotations:
+    "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    {{- range $annotationName, $annotationValue := $.Values.virtualService.annotations }}
+    {{ $annotationName | quote }}: {{ $annotationValue | quote }}
+    {{- end }}
+
+spec:
+  {{- if $.Values.virtualService.gateways }}
+  gateways:
+  {{- range $.Values.virtualService.gateways }}
+  - {{ . | quote }}
+  {{- end }}
+  {{- else }}
+  gateways:
+  - "mesh"
+  {{- end }}
+
+  hosts:
+  {{- if $.Values.virtualService.hosts }}
+  {{- range $.Values.virtualService.hosts }}
+  - {{ . | quote }}
+  {{- end }}
+  {{- else }}
+  - {{ printf "%s.%s.svc.cluster.local" ($.Values.service.name | default $.Release.Name) $.Release.Namespace | quote }}
+  {{- end }}
+
+  http:
+  {{- range $ruleIndex, $vsRule := $.Values.virtualService.rules }}
+  - name: {{ (printf "%s-%d" $.Release.Name $ruleIndex) | quote }}
+
+    {{- if $vsRule.match }}
+    match:
+    {{- range $match := $vsRule.match }}
+    - uri:
+        {{- if $match.exact }}
+        exact: {{ $match.exact | quote }}
+        {{- else if $match.prefix }}
+        prefix: {{ $match.prefix | quote }}
+        {{- else if $match.regex }}
+        regex: {{ $match.regex | quote }}
+        {{- else }}
+        prefix: "/"
+        {{- end }}
+    {{- end }}
+    {{- else }}
+    match:
+    - uri:
+        prefix: "/"
+    {{- end }}
+
+    {{- if $vsRule.rewrite }}
+    rewrite:
+      {{- if $vsRule.rewrite.uri }}
+      uri: {{ $vsRule.rewrite.uri | quote }}
+      {{- end }}
+      {{- if $vsRule.rewrite.authority }}
+      authority: {{ $vsRule.rewrite.authority | quote }}
+      {{- end }}
+    {{- end }}
+
+    route:
+    {{- if $.Values.service.ports }}
+    {{- range $portMapIndex, $portMap := $.Values.service.ports }}
+    - destination:
+        host: {{ $.Values.service.name | default $.Release.Name | quote }}
+        port:
+          number: {{ $portMap.port }}
+      {{- if $vsRule.weight }}
+      weight: {{ $vsRule.weight }}
+      {{- end }}
+    {{- end }}
+    {{- else }}
+    - destination:
+        host: {{ $.Values.service.name | default $.Release.Name | quote }}
+        port:
+          number: {{ $vsRule.servicePort | default 80 }}
+    {{- end }}
+
+    {{- if $vsRule.retries }}
+    retries:
+      attempts: {{ $vsRule.retries.attempts | default 3 }}
+      perTryTimeout: {{ $vsRule.retries.perTryTimeout | default "2s" | quote }}
+      retryOn: {{ $vsRule.retries.retryOn | default "5xx" | quote }}
+    {{- end }}
+
+    {{- if $vsRule.timeout }}
+    timeout: {{ $vsRule.timeout | quote }}
+    {{- end }}
+
+    {{- if $vsRule.corsPolicy }}
+    corsPolicy:
+{{ toYaml $vsRule.corsPolicy | indent 6 }}
+    {{- end }}
+
+  {{- end }}
+
+{{- end }}
